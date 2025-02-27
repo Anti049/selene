@@ -1,0 +1,100 @@
+name: selene
+description: 'A new Flutter project.'
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+    sdk: ^3.7.0
+
+dependencies:
+    animated_visibility: ^0.0.4
+    auto_route: ^9.2.2
+    collection: ^1.19.1
+    cupertino_icons: ^1.0.8
+    dartx: ^1.2.0
+    easy_localization: ^3.0.7+1
+    easy_localization_loader: ^2.0.2
+    flutter:
+        sdk: flutter
+    flutter_launcher_icons: ^0.14.3
+    flutter_riverpod: ^2.6.1
+    flutter_svg: ^2.0.17
+    freezed_annotation: ^2.4.4
+    hive_ce: ^2.10.1
+    hive_ce_flutter: ^2.2.0
+    isar:
+        version: 3.1.8
+        hosted: https://pub.isar-community.dev/
+    isar_flutter_libs: # contains Isar Core
+        version: 3.1.8
+        hosted: https://pub.isar-community.dev/
+    json_annotation: ^4.9.0
+    material_symbols_icons: ^4.2805.1
+    path: ^1.9.1
+    path_provider: ^2.1.5
+    riverpod_annotation: ^2.6.1
+
+dependency_overrides:
+    analyzer: '>=5.2.0 <7.0.0'
+
+dev_dependencies:
+    auto_route_generator: ^9.0.0
+    build_runner: ^2.4.13
+    flutter_test:
+        sdk: flutter
+    flutter_lints: ^5.0.0
+    freezed: ^2.5.7
+    hive_ce_generator: ^1.8.1
+    isar_generator:
+        version: 3.1.8
+        hosted: https://pub.isar-community.dev/
+    json_serializable: ^6.9.0
+    package_rename: ^1.8.0
+    riverpod_generator: ^2.3.3
+    riverpod_lint: ^2.1.1
+
+flutter:
+    uses-material-design: true
+    generate: true
+    assets:
+        - assets/
+        - assets/fonts/
+        - assets/images/
+        - assets/launcher/
+
+flutter_launcher_icons:
+    android: 'launcher_icon'
+    ios: true
+    remove_alpha_ios: true
+    image_path: 'assets/launcher/icon.png'
+    min_sdk_android: 21
+    windows:
+        generate: true
+        image_path: 'assets/launcher/icon-transparent.png'
+    macos:
+        generate: true
+        image_path: 'assets/launcher/icon.png'
+
+package_rename_config:
+    android:
+        app_name: Selene
+        package_name: dev.nploetz.selene
+        override_old_package: com.example.selene
+        lang: kotlin
+    ios:
+        app_name: Selene
+        bundle_name: selene
+        package_name: dev.nploetz.selene
+    linux:
+        app_name: Selene
+        package_name: dev.nploetz.selene
+        exe_name: selene-linux-x64
+    windows:
+        app_name: Selene
+        organization: nploetz
+        copyright_notice: Copyright ©️ 2025 nploetz. All rights reserved.
+        exe_name: selene-win32
+    macos:
+        app_name: Selene
+        package_name: dev.nploetz.selene
+        copyright_notice: Copyright ©️ 2025 nploetz. All rights reserved.

@@ -1,0 +1,23 @@
+{
+	"@@locale": "en",
+	"library": "Library",
+	"@library": {
+		"description": "The Library tab."
+	},
+	"updates": "Updates",
+	"@updates": {
+		"description": "The Updates tab."
+	},
+	"history": "History",
+	"@history": {
+		"description": "The History tab."
+	},
+	"browse": "Browse",
+	"@browse": {
+		"description": "The Browse tab."
+	},
+	"more": "More",
+	"@more": {
+		"description": "The More tab."
+	}
+}
