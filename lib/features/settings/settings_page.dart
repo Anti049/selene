@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/common/widgets/empty.dart';
-import 'package:selene/features/settings/appearance/providers/appearance_settings.dart';
+import 'package:selene/features/settings/screens/advanced/providers/advanced_settings.dart';
+import 'package:selene/features/settings/screens/appearance/providers/appearance_settings.dart';
 import 'package:selene/features/settings/models/searchable_settings.dart';
 import 'package:selene/features/settings/models/setting.dart';
 import 'package:selene/features/settings/widgets/setting_scaffold.dart';
+import 'package:selene/router/router.gr.dart';
 import 'package:selene/utils/string.dart';
 import 'package:selene/utils/theming.dart';
 
@@ -23,6 +25,17 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _settingScreens = <ISearchableSettings>[
     // Add your settings screens here
     AppearanceSettings(),
+    // LibrarySettings(),
+    // AccountsSettings(),
+    // ReaderSettings(),
+    // DownloadsSettings(),
+    // TrackingSettings(),
+    // BrowseSettings(),
+    // NotificationsSettings(),
+    // DataStorageSettings(),
+    // SecurityPrivacySettings(),
+    AdvancedSettings(),
+    // AboutSettings(),
   ];
 
   Iterable<SettingsData> getSettingsData(BuildContext context, WidgetRef ref) {
@@ -43,7 +56,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         title: 'Appearance',
         subtitle: 'Theme, font, language, and more',
         icon: Symbols.palette,
-        onClick: () => router.pushNamed('/settings/appearance'),
+        onClick: () => router.push(AppearanceSettingsRoute()),
       ),
       // Library
       TextSetting(
@@ -104,6 +117,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         title: 'Advanced',
         subtitle: 'Developer options, experimental features',
         icon: Symbols.developer_mode,
+        onClick: () => router.push(AdvancedSettingsRoute()),
       ),
       // About
       TextSetting(

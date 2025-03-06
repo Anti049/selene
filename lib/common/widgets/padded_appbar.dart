@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/features/banners/providers/banners_provider.dart';
-import 'package:selene/features/settings/appearance/providers/appearance_preferences.dart';
+import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
 import 'package:selene/utils/theming.dart';
 
 class PaddedAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -13,6 +13,7 @@ class PaddedAppBar extends ConsumerWidget implements PreferredSizeWidget {
     this.leading,
     this.bottom,
     this.primary = true,
+    this.backgroundColor,
   });
 
   final Widget? title;
@@ -21,6 +22,7 @@ class PaddedAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final PreferredSizeWidget? bottom;
   final bool primary;
   final MenuController _menuController = MenuController();
+  final Color? backgroundColor;
 
   bool get needsPadding {
     if (actions == null) return false;
@@ -63,6 +65,7 @@ class PaddedAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final bannersActive = ref.watch(bannersActiveProvider);
     return AppBar(
       primary: !bannersActive,
+      backgroundColor: backgroundColor,
       title: title,
       actions: [..._actions, if (needsPadding) const SizedBox(width: 8.0)],
       leading: leading,

@@ -9,10 +9,10 @@ class MorePreferences {
   MorePreferences(this._preferences);
   final PreferenceStore _preferences;
 
-  Preference<bool> downloadedOnly() =>
+  Preference<bool> get downloadedOnly =>
       _preferences.getBool("downloadedOnly", defaultValue: false);
 
-  Preference<bool> incognitoMode() =>
+  Preference<bool> get incognitoMode =>
       _preferences.getBool("incognitoMode", defaultValue: false);
 }
 

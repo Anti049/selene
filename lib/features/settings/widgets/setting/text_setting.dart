@@ -1,6 +1,5 @@
-import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
-import 'package:selene/utils/theming.dart';
+import 'package:selene/features/settings/widgets/setting/base_widget.dart';
 
 const enabledSubtitleOpacity = 0.75;
 const disabledSubtitleOpacity = 0.5;
@@ -14,7 +13,8 @@ class TextSettingWidget extends StatelessWidget {
     this.icon,
     this.onClick,
     this.enabled = true,
-    this.trailing,
+    this.subcomponent,
+    this.disabledMessage,
   });
 
   final String? title;
@@ -22,37 +22,19 @@ class TextSettingWidget extends StatelessWidget {
   final IconData? icon;
   final void Function()? onClick;
   final bool enabled;
-  final Widget? trailing;
+  final Widget? subcomponent;
+  final String? disabledMessage;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color:
-            enabled ? context.scheme.primary : context.scheme.onSurfaceVariant,
-      ),
-      title:
-          title.isNotNullOrBlank
-              ? Text(title!, overflow: TextOverflow.ellipsis, maxLines: 2)
-              : null,
-      subtitle:
-          subtitle.isNotNullOrBlank
-              ? Opacity(
-                opacity:
-                    enabled ? enabledSubtitleOpacity : disabledSubtitleOpacity,
-                child: Text(
-                  subtitle!,
-                  style: context.text.bodySmall,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
-              )
-              : null,
-      trailing: trailing,
+    return BaseSettingWidget(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
       enabled: enabled,
-      onTap: onClick,
-      horizontalTitleGap: icon != null ? iconTitleBuffer : null,
+      onClick: onClick,
+      subcomponent: subcomponent,
+      disabledMessage: disabledMessage,
     );
   }
 }

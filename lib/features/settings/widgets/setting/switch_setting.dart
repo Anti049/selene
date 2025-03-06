@@ -10,6 +10,7 @@ class SwitchSettingWidget extends StatelessWidget {
     this.icon,
     this.preference,
     this.enabled = true,
+    this.disabledMessage,
   });
 
   final String? title;
@@ -17,6 +18,7 @@ class SwitchSettingWidget extends StatelessWidget {
   final IconData? icon;
   final Preference<bool>? preference;
   final bool enabled;
+  final String? disabledMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +29,11 @@ class SwitchSettingWidget extends StatelessWidget {
       icon: icon,
       enabled: widgetEnabled,
       onClick: () => preference?.toggle(),
-      trailing: Switch(
+      subcomponent: Switch(
         value: preference?.get() ?? false,
         onChanged: widgetEnabled ? (value) => preference?.set(value) : null,
       ),
+      disabledMessage: disabledMessage,
     );
   }
 }

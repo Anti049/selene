@@ -25,14 +25,14 @@ class BannerFrame extends ConsumerWidget {
     final banners = [
       Banner(
         label: 'Downloaded Only',
-        backgroundColor: context.scheme.tertiary,
-        textColor: context.scheme.onTertiary,
+        backgroundColor: context.scheme.primary,
+        textColor: context.scheme.onPrimary,
         visible: downloadedOnly,
       ),
       Banner(
         label: 'Incognito Mode',
-        backgroundColor: context.scheme.secondary,
-        textColor: context.scheme.onSecondary,
+        backgroundColor: context.scheme.tertiary,
+        textColor: context.scheme.onTertiary,
         visible: incognitoMode,
       ),
     ];
@@ -47,9 +47,9 @@ class BannerFrame extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final downloadedOnly =
-        ref.watch(morePreferencesProvider).downloadedOnly().get();
+        ref.watch(morePreferencesProvider).downloadedOnly.get();
     final incognitoMode =
-        ref.watch(morePreferencesProvider).incognitoMode().get();
+        ref.watch(morePreferencesProvider).incognitoMode.get();
     return Scaffold(
       body: Column(
         children: [

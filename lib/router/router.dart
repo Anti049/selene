@@ -28,7 +28,28 @@ class SeleneRouter extends RootStackRouter {
         AutoRoute(path: 'more', page: MoreRoute.page),
       ],
     ),
+    CustomRoute(
+      path: '/library/options',
+      page: LibraryOptionsRoute.page,
+      transitionsBuilder: TransitionsBuilders.slideRightWithFade,
+      durationInMilliseconds: 200,
+      reverseDurationInMilliseconds: 200,
+      children: [
+        AutoRoute(path: 'tags', page: TagsRoute.page),
+        AutoRoute(path: 'filters', page: FiltersRoute.page),
+        AutoRoute(path: 'sort', page: SortRoute.page),
+        AutoRoute(path: 'display', page: DisplayRoute.page),
+      ],
+    ),
+    AutoRoute(path: '/library/details/:id', page: StoryDetailsRoute.page),
     AutoRoute(path: '/settings', page: SettingsRoute.page),
     AutoRoute(path: '/settings/appearance', page: AppearanceSettingsRoute.page),
+    AutoRoute(
+      path: '/settings/appearance/theme-selection',
+      page: ThemeSelectionRoute.page,
+    ),
+    AutoRoute(path: '/settings/library', page: LibrarySettingsRoute.page),
+    AutoRoute(path: '/settings/advanced', page: AdvancedSettingsRoute.page),
+    AutoRoute(path: '/settings/about', page: AboutSettingsRoute.page),
   ];
 }

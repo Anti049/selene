@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:selene/features/settings/models/preference.dart';
 import 'package:selene/features/settings/widgets/setting/segmented_setting.dart';
+import 'package:selene/features/settings/widgets/setting/slider_setting.dart';
 import 'package:selene/features/settings/widgets/setting/switch_setting.dart';
 import 'package:selene/features/settings/widgets/setting/text_setting.dart';
 
@@ -12,10 +13,17 @@ sealed class ISetting {
 }
 
 sealed class Setting<T> extends ISetting {
-  Setting({super.title, super.icon, this.preference, this.enabled = true});
+  Setting({
+    super.title,
+    super.icon,
+    this.preference,
+    this.enabled = true,
+    this.disabledMessage,
+  });
 
   final Preference<T>? preference;
   final bool enabled;
+  final String? disabledMessage;
 }
 
 class TextSetting extends Setting<String> {
@@ -26,6 +34,7 @@ class TextSetting extends Setting<String> {
     super.preference,
     super.enabled,
     this.onClick,
+    super.disabledMessage,
   });
 
   final String? subtitle;
@@ -39,6 +48,7 @@ class SwitchSetting extends Setting<bool> {
     super.icon,
     super.preference,
     super.enabled,
+    super.disabledMessage,
   });
 
   final String? subtitle;
@@ -62,11 +72,32 @@ class ChoiceSetting extends Setting<dynamic> {
     super.enabled,
     required this.options,
     required this.type,
+    this.showTitle = false,
   });
 
   final String? subtitle;
   final List<Choice> options;
   final ChoiceType type;
+  final bool showTitle;
+}
+
+class SliderSetting extends Setting<double> {
+  SliderSetting({
+    required super.title,
+    this.subtitle,
+    super.icon,
+    super.preference,
+    super.enabled,
+    this.min = 0.0,
+    this.max = 1.0,
+    this.divisions,
+    super.disabledMessage,
+  });
+
+  final String? subtitle;
+  final double min;
+  final double max;
+  final int? divisions;
 }
 
 class WidgetSetting extends ISetting {
@@ -94,6 +125,7 @@ Widget buildSettingWidget(BuildContext context, ISetting setting) {
         icon: setting.icon,
         onClick: setting.onClick,
         enabled: setting.enabled,
+        disabledMessage: setting.disabledMessage,
       );
     case SwitchSetting():
       return SwitchSettingWidget(
@@ -102,6 +134,7 @@ Widget buildSettingWidget(BuildContext context, ISetting setting) {
         icon: setting.icon,
         preference: setting.preference,
         enabled: setting.enabled,
+        disabledMessage: setting.disabledMessage,
       );
     case ChoiceSetting():
       switch (setting.type) {
@@ -113,11 +146,23 @@ Widget buildSettingWidget(BuildContext context, ISetting setting) {
           throw UnimplementedError();
         case ChoiceType.segmented:
           return SegmentedSettingWidget(
-            title: setting.title,
+            title: setting.showTitle ? setting.title : null,
             options: setting.options,
             preference: setting.preference,
           );
       }
+    case SliderSetting():
+      return SliderSettingWidget(
+        title: setting.title,
+        subtitle: setting.subtitle,
+        icon: setting.icon,
+        preference: setting.preference,
+        enabled: setting.enabled,
+        min: setting.min,
+        max: setting.max,
+        divisions: setting.divisions,
+        disabledMessage: setting.disabledMessage,
+      );
     case WidgetSetting():
       return setting.widget;
     case SettingGroup():

@@ -9,11 +9,11 @@ class BannersActive extends _$BannersActive {
   bool build() {
     final more = ref.watch(morePreferencesProvider);
 
-    return more.downloadedOnly().get() || more.incognitoMode().get();
+    return more.downloadedOnly.get() || more.incognitoMode.get();
   }
 
   bool get downloadedOnly =>
-      ref.watch(morePreferencesProvider).downloadedOnly().get();
+      ref.watch(morePreferencesProvider).downloadedOnly.get();
   bool get incognitoMode =>
-      ref.watch(morePreferencesProvider).incognitoMode().get();
+      ref.watch(morePreferencesProvider).incognitoMode.get();
 }

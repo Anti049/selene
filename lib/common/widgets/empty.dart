@@ -14,6 +14,10 @@ const List<String> _errorFaces = [
   "(っ◞‸◟ c)",
   "｡°(°.◜ᯅ◝°)°｡",
   "(≥o≤)",
+  "(╥﹏╥)",
+  "(´；д；`)",
+  "( •ө• )",
+  "(·•᷄‎ࡇ•᷅ )",
 ];
 
 class Empty extends StatefulWidget {

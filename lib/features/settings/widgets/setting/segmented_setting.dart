@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:selene/features/settings/models/preference.dart';
 import 'package:selene/features/settings/models/setting.dart';
@@ -19,6 +20,7 @@ class SegmentedSettingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      title: title.isNotNullOrBlank ? Text(title!) : const SizedBox.shrink(),
       subtitle: SegmentedButton(
         segments:
             options.map((e) {

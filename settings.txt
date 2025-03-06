@@ -1,0 +1,116 @@
+Settings
+  Appearance
+    Theme
+      Mode
+      Contrast Level
+      Blend Level
+      Theme Selection
+      Use Pure Black
+      E-ink Mode
+    Display
+      App Language
+      Font
+    Date & Time
+      Date Format
+      Relative Timestamp
+  Library
+    Categories
+      Edit Categories
+      Default Category
+      Per-Category Sort Settings
+    Global Update
+      Automatic Updates
+      Include/Exclude Categories
+      Automatically Refresh Metadata
+      Smart Update
+      Show Unread Count on Updates Icon
+    Chapter Swipe
+      Swipe Left Action
+      Swipe Right Action
+
+  Accounts
+
+  Reader
+
+  Downloads
+
+  Tracking
+
+  Browse
+
+  Notifications
+    Test
+      Full
+      Vibrate
+      Sound
+      Silent
+    Categories
+      App Update
+      Story Update
+      Site Message
+      Outage
+
+  Data & Storage
+    General
+      Storage Location
+    Reading Progress
+      Sync When
+      Sync Server
+    Backup & Restore
+      Backup
+      Restore
+    Storage Usage
+      Available/Total
+      Clear Chapter Cache
+      Clear Chapter Cache on App Launch
+
+  Security & Privacy
+    Security
+      Require Unlock
+      Hide Notification Content
+      Secure Screen
+    Privacy
+      Allow Analytics
+      Send Crash Logs
+
+  Premium
+    Text-to-Speech
+    Android Auto/Apple CarPlay
+    X-Ray
+    AI Summary
+    Wiki Integration
+
+  Advanced
+    General
+      Share Crash Logs
+      Verbose Logging
+      Debug Info
+    Background Activity
+      Disable Battery Optimization
+      Don't Kill My App!
+    Data
+      Reindex Downloads
+      Clear database
+    Networking
+      Clear Cookies
+      Clear WebView Data
+      DNS Over HTTPS (DoH)
+      Default User Agent String
+    Library
+      Refresh Library Covers
+      Reset Per-Series Reader Settings
+
+  About
+    Logo
+    Version
+    Check for Updates
+    Onboarding Guide
+    What's New
+    Open-Source Licenses
+    Privacy Policy
+    Links
+      Website
+      Discord
+      BlueSky
+      Reddit
+      GitHub

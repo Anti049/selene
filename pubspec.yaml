@@ -8,15 +8,24 @@ environment:
 
 dependencies:
     animated_visibility: ^0.0.4
+    appbar_animated: ^0.0.3
+    archive: ^4.0.4
     auto_route: ^9.2.2
     collection: ^1.19.1
     cupertino_icons: ^1.0.8
     dartx: ^1.2.0
+    device_info_plus: ^11.3.3
     easy_localization: ^3.0.7+1
     easy_localization_loader: ^2.0.2
+    expand_widget: ^3.1.1
+    file_picker: ^9.0.2
+    flex_color_scheme: ^8.1.1
+    flex_seed_scheme: ^3.5.0
     flutter:
         sdk: flutter
     flutter_launcher_icons: ^0.14.3
+    flutter_layout_grid: ^2.0.7
+    flutter_native_splash: ^2.4.5
     flutter_riverpod: ^2.6.1
     flutter_svg: ^2.0.17
     freezed_annotation: ^2.4.4
@@ -32,7 +41,13 @@ dependencies:
     material_symbols_icons: ^4.2805.1
     path: ^1.9.1
     path_provider: ^2.1.5
+    permission_handler: ^11.4.0
+    responsive_framework: ^1.5.1
     riverpod_annotation: ^2.6.1
+    rxdart: ^0.28.0
+    stream_transform: ^2.1.1
+    system_theme: ^3.1.2
+    xml: ^6.5.0
 
 dependency_overrides:
     analyzer: '>=5.2.0 <7.0.0'
@@ -61,19 +76,39 @@ flutter:
         - assets/fonts/
         - assets/images/
         - assets/launcher/
+        - assets/splash/
 
 flutter_launcher_icons:
-    android: 'launcher_icon'
+    # Android
+    android: true
+    image_path_android: 'assets/launcher/android/icon.png'
+    min_sdk_android: 21 # android min sdk min:16, default 21
+    adaptive_icon_background: 'assets/launcher/android/background.png'
+    adaptive_icon_foreground: 'assets/launcher/android/foreground.png'
+    adaptive_icon_foreground_inset: 0
+    adaptive_icon_monochrome: 'assets/launcher/android/monochrome.png'
+
+    # iOS
     ios: true
-    remove_alpha_ios: true
-    image_path: 'assets/launcher/icon.png'
-    min_sdk_android: 21
+    image_path_ios: 'assets/launcher/ios/icon.png'
+    remove_alpha_channel_ios: true
+
+    # Windows
     windows:
         generate: true
-        image_path: 'assets/launcher/icon-transparent.png'
+        image_path: 'assets/launcher/windows/icon.png'
+
     macos:
         generate: true
-        image_path: 'assets/launcher/icon.png'
+        image_path: 'assets/launcher/macos/icon.png'
+
+flutter_native_splash:
+    background_image: assets/splash/background.png
+    image: assets/splash/icon.png
+    # Android
+    android_12:
+        image: assets/splash/foreground.png
+        color: '#111318'
 
 package_rename_config:
     android:

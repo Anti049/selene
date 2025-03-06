@@ -22,13 +22,13 @@ class MoreTab extends ConsumerWidget {
         title: 'Downloaded Only',
         subtitle: 'Only show downloaded content',
         icon: Symbols.cloud_off,
-        preference: preferences.downloadedOnly(),
+        preference: preferences.downloadedOnly,
       ),
       SwitchSetting(
         title: 'Incognito Mode',
         subtitle: 'Pause reading history',
         icon: CupertinoIcons.eyeglasses,
-        preference: preferences.incognitoMode(),
+        preference: preferences.incognitoMode,
       ),
       DividerSetting(),
       TextSetting(
