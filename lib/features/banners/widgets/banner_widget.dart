@@ -24,27 +24,42 @@ class BannerWidget extends StatelessWidget {
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
     final bannerHeight = 32.0 + (isTopmost ? statusBarHeight : 0.0);
     // Banner widget
-    return AnimatedVisibility(
-      visible: visible,
-      enter: expandVertically(),
-      enterDuration: const Duration(milliseconds: 200),
-      exit: shrinkVertically(),
-      exitDuration: const Duration(milliseconds: 200),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        constraints: BoxConstraints(minHeight: bannerHeight),
-        color: backgroundColor,
-        alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                label,
-                style: context.text.labelMedium?.copyWith(color: textColor),
-              ),
-            ],
+    return ClipRect(
+      child: AnimatedVisibility(
+        visible: visible,
+        enter: slideInVertically(
+          curve: Curves.easeInOutCubic,
+          initialOffsetY: -1.0,
+        ),
+        enterDuration: const Duration(milliseconds: 200),
+        exit: slideOutVertically(
+          curve: Curves.easeInOutCubic,
+          targetOffsetY: -1.0,
+        ),
+        exitDuration: const Duration(milliseconds: 200),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOutCubic,
+          constraints: BoxConstraints(minHeight: bannerHeight),
+          color: backgroundColor,
+          alignment: Alignment.bottomCenter,
+          // curve: Curves.easeInOutCubic,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOutCubic,
+                  child: SizedBox(height: isTopmost ? statusBarHeight : 0.0),
+                ),
+                Text(
+                  label,
+                  style: context.text.labelMedium?.copyWith(color: textColor),
+                ),
+              ],
+            ),
           ),
         ),
       ),

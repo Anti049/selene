@@ -21,4 +21,8 @@ class LibraryModel with _$LibraryModel {
   bool get isEmpty =>
       libraryItems.isEmpty && searchQuery.isNullOrEmpty && !hasActiveFilters;
   int get itemCount => libraryItems.length;
+
+  bool get selecting => selectedItems.isNotEmpty;
+  int get selectedCount => selectedItems.length;
+  bool isSelected(LibraryItem item) => selectedItems.contains(item);
 }

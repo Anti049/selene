@@ -23,7 +23,11 @@ class CheckboxSettingWidget<T> extends StatelessWidget {
   final String? disabledMessage;
 
   void onChanged(bool? value) {
-    preference?.set(TriState.fromBool(value));
+    if (T == bool) {
+      preference?.set(value);
+    } else if (T == TriState) {
+      preference?.set(TriState.fromBool(value));
+    }
   }
 
   bool? get value {

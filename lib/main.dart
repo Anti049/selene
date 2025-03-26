@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,14 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:isar/isar.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:selene/features/banners/providers/banners_provider.dart';
 import 'package:selene/features/banners/widgets/banner_frame.dart';
 import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
 import 'package:selene/features/settings/screens/appearance/themes/data/themes.dart';
 import 'package:selene/features/settings/screens/appearance/themes/models/theme.dart';
 import 'package:selene/router/router.dart' show SeleneRouter;
 import 'package:selene/utils/responsive_layout.dart';
-import 'package:selene/utils/theming.dart';
 import 'package:system_theme/system_theme.dart';
 
 late Isar isarInstance;
@@ -72,18 +71,21 @@ class MainApp extends ConsumerWidget {
                     getThemeByCategory(ThemeCategory.system);
 
         // Handle brightness for system icons
-        final appBrightness = calculateBrightness(
-          context,
-          appearancePrefs.themeMode.get(),
+        // final appBrightness = calculateBrightness(
+        //   context,
+        //   appearancePrefs.themeMode.get(),
+        // );
+        SystemChrome.setEnabledSystemUIMode(
+          SystemUiMode.edgeToEdge,
+          overlays: [SystemUiOverlay.bottom],
         );
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-        SystemChrome.setSystemUIOverlayStyle(
-          calculateOverlayStyle(
-            context,
-            appBrightness,
-            ref.watch(bannersActiveProvider),
-          ),
-        );
+        // SystemChrome.setSystemUIOverlayStyle(
+        //   calculateOverlayStyle(
+        //     context,
+        //     appBrightness,
+        //     ref.watch(bannersActiveProvider),
+        //   ),
+        // );
 
         return MaterialApp.router(
           themeMode: appearancePrefs.themeMode.get(),
@@ -116,7 +118,9 @@ class MainApp extends ConsumerWidget {
               ],
             );
           },
-          routerConfig: _seleneRouter.config(),
+          routerConfig: _seleneRouter.config(
+            navigatorObservers: () => [AutoRouteObserver()],
+          ),
         );
       },
     );

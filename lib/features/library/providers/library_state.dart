@@ -1,11 +1,15 @@
+import 'dart:math';
+
 import 'package:dartx/dartx.dart';
+import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:selene/features/library/models/item_preferences.dart';
-import 'package:selene/features/library/models/library_model.dart';
-import 'package:selene/features/library/models/library_item.dart';
-import 'package:selene/features/library/providers/library_preferences.dart';
 import 'package:rxdart/rxdart.dart' hide DebounceExtensions;
+import 'package:selene/features/library/models/item_preferences.dart';
+import 'package:selene/features/library/models/library_item.dart';
+import 'package:selene/features/library/models/library_model.dart';
+import 'package:selene/features/library/providers/library_preferences.dart';
 import 'package:selene/features/more/providers/more_preferences.dart';
+import 'package:selene/features/story/models/story.dart';
 import 'package:selene/utils/enums.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -101,8 +105,25 @@ class LibraryState extends _$LibraryState {
     // Get preferences
     // final libraryPrefs = ref.watch(libraryPreferencesProvider);
 
+    // Sample stories
+    final libraryItems = [
+      ...List.generate(
+        20,
+        (index) => LibraryItem(
+          id: index,
+          story: Story(
+            title: 'Sample Story ${index + 1}',
+            url: '',
+            author: 'Author ${index + 1}',
+            description: loremIpsum(words: 60),
+            chapterCount: Random().nextInt(99) + 1,
+          ),
+        ),
+      ),
+    ];
+
     // Get library items stream
-    final libraryItemsStream = Stream.value(<LibraryItem>[]);
+    final libraryItemsStream = Stream.value(libraryItems);
 
     return libraryItemsStream;
   }
@@ -112,6 +133,77 @@ class LibraryState extends _$LibraryState {
     final previousState = state.valueOrNull;
     if (previousState != null) {
       final newState = previousState.copyWith(searchQuery: query);
+      state = await AsyncValue.guard(() async => newState);
+    }
+  }
+
+  // Select
+  void clearSelection() async {
+    final previousState = state.valueOrNull;
+    if (previousState != null) {
+      final newState = previousState.copyWith(selectedItems: []);
+      state = await AsyncValue.guard(() async => newState);
+    }
+  }
+
+  void toggleSelection(LibraryItem item) async {
+    final previousState = state.valueOrNull;
+    if (previousState != null) {
+      final newState = previousState.copyWith(
+        selectedItems:
+            previousState.selectedItems.contains(item)
+                ? previousState.selectedItems.where((it) => it != item).toList()
+                : [...previousState.selectedItems, item],
+      );
+      state = await AsyncValue.guard(() async => newState);
+    }
+  }
+
+  /// Selects all works between and including the given work and the last pressed work
+  void toggleRangeSelection(LibraryItem item) async {
+    final previousState = state.valueOrNull;
+    if (previousState != null) {
+      final selectedItems = previousState.selectedItems;
+      final lastSelected = selectedItems.isNotEmpty ? selectedItems.last : null;
+
+      final newState = previousState.copyWith(
+        selectedItems: [
+          ...selectedItems,
+          ...previousState.libraryItems.sublist(
+            min(
+              previousState.libraryItems.indexOf(item),
+              previousState.libraryItems.indexOf(lastSelected ?? item),
+            ),
+            max(
+              previousState.libraryItems.indexOf(item) + 1,
+              previousState.libraryItems.indexOf(lastSelected ?? item),
+            ),
+          ),
+        ],
+      );
+      state = await AsyncValue.guard(() async => newState);
+    }
+  }
+
+  void selectAll() async {
+    final previousState = state.valueOrNull;
+    if (previousState != null) {
+      final newState = previousState.copyWith(
+        selectedItems: previousState.libraryItems,
+      );
+      state = await AsyncValue.guard(() async => newState);
+    }
+  }
+
+  void invertSelection() async {
+    final previousState = state.valueOrNull;
+    if (previousState != null) {
+      final newState = previousState.copyWith(
+        selectedItems:
+            previousState.libraryItems
+                .where((it) => !previousState.selectedItems.contains(it))
+                .toList(),
+      );
       state = await AsyncValue.guard(() async => newState);
     }
   }

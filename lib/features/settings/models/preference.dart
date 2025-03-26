@@ -26,6 +26,10 @@ sealed class Preference<T> {
     write(_key, value);
   }
 
+  void reset() {
+    set(_defaultValue);
+  }
+
   // Delete
   void delete() async {
     _preferences.delete(_key);

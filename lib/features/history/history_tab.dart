@@ -8,8 +8,6 @@ class HistoryTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Empty(message: 'History is not yet implemented.'),
-    );
+    return Scaffold(body: Empty(message: 'History is not yet implemented.'));
   }
 }

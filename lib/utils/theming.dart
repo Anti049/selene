@@ -29,13 +29,16 @@ SystemUiOverlayStyle calculateOverlayStyle(
   Brightness brightness,
   bool bannersActive,
 ) {
-  final statusBarColor = context.scheme.surfaceTint.withOpacity(0.002);
+  final statusBarColor = context.scheme.surfaceTint.withValues(alpha: 0.002);
   final iconBrightness = brightness.invert;
+  final statusBrightness =
+      !bannersActive ? iconBrightness : iconBrightness.invert;
   return SystemUiOverlayStyle(
     statusBarColor: statusBarColor,
-    statusBarIconBrightness:
-        bannersActive ? iconBrightness.invert : iconBrightness,
-    systemNavigationBarColor: statusBarColor,
+    statusBarIconBrightness: statusBrightness,
+    systemNavigationBarColor: context.scheme.surfaceContainer.withValues(
+      alpha: 0.75,
+    ),
     systemNavigationBarIconBrightness: iconBrightness,
   );
 }

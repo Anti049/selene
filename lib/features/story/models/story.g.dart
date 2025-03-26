@@ -17,25 +17,40 @@ const StorySchema = CollectionSchema(
   name: r'stories',
   id: 1811190258649284091,
   properties: {
-    r'fileStatus': PropertySchema(
+    r'author': PropertySchema(
       id: 0,
+      name: r'author',
+      type: IsarType.string,
+    ),
+    r'chapterCount': PropertySchema(
+      id: 1,
+      name: r'chapterCount',
+      type: IsarType.long,
+    ),
+    r'description': PropertySchema(
+      id: 2,
+      name: r'description',
+      type: IsarType.string,
+    ),
+    r'fileStatus': PropertySchema(
+      id: 3,
       name: r'fileStatus',
       type: IsarType.byte,
       enumMap: _StoryfileStatusEnumValueMap,
     ),
     r'status': PropertySchema(
-      id: 1,
+      id: 4,
       name: r'status',
       type: IsarType.byte,
       enumMap: _StorystatusEnumValueMap,
     ),
     r'title': PropertySchema(
-      id: 2,
+      id: 5,
       name: r'title',
       type: IsarType.string,
     ),
     r'url': PropertySchema(
-      id: 3,
+      id: 6,
       name: r'url',
       type: IsarType.string,
     )
@@ -74,6 +89,18 @@ int _storyEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
+    final value = object.author;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.description;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.title;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -94,10 +121,13 @@ void _storySerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeByte(offsets[0], object.fileStatus.index);
-  writer.writeByte(offsets[1], object.status.index);
-  writer.writeString(offsets[2], object.title);
-  writer.writeString(offsets[3], object.url);
+  writer.writeString(offsets[0], object.author);
+  writer.writeLong(offsets[1], object.chapterCount);
+  writer.writeString(offsets[2], object.description);
+  writer.writeByte(offsets[3], object.fileStatus.index);
+  writer.writeByte(offsets[4], object.status.index);
+  writer.writeString(offsets[5], object.title);
+  writer.writeString(offsets[6], object.url);
 }
 
 Story _storyDeserialize(
@@ -107,14 +137,17 @@ Story _storyDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Story(
+    author: reader.readStringOrNull(offsets[0]),
+    chapterCount: reader.readLongOrNull(offsets[1]),
+    description: reader.readStringOrNull(offsets[2]),
     fileStatus:
-        _StoryfileStatusValueEnumMap[reader.readByteOrNull(offsets[0])] ??
+        _StoryfileStatusValueEnumMap[reader.readByteOrNull(offsets[3])] ??
             FileStatus.none,
     id: id,
-    status: _StorystatusValueEnumMap[reader.readByteOrNull(offsets[1])] ??
+    status: _StorystatusValueEnumMap[reader.readByteOrNull(offsets[4])] ??
         StoryStatus.unknown,
-    title: reader.readStringOrNull(offsets[2]),
-    url: reader.readStringOrNull(offsets[3]),
+    title: reader.readStringOrNull(offsets[5]),
+    url: reader.readStringOrNull(offsets[6]),
   );
   return object;
 }
@@ -127,14 +160,20 @@ P _storyDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (_StoryfileStatusValueEnumMap[reader.readByteOrNull(offset)] ??
-          FileStatus.none) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (_StorystatusValueEnumMap[reader.readByteOrNull(offset)] ??
-          StoryStatus.unknown) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
+      return (_StoryfileStatusValueEnumMap[reader.readByteOrNull(offset)] ??
+          FileStatus.none) as P;
+    case 4:
+      return (_StorystatusValueEnumMap[reader.readByteOrNull(offset)] ??
+          StoryStatus.unknown) as P;
+    case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -260,6 +299,366 @@ extension StoryQueryWhere on QueryBuilder<Story, Story, QWhereClause> {
 }
 
 extension StoryQueryFilter on QueryBuilder<Story, Story, QFilterCondition> {
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'author',
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'author',
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'author',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'author',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'author',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'author',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'author',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'author',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorContains(String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'author',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'author',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'author',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> authorIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'author',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> chapterCountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'chapterCount',
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> chapterCountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'chapterCount',
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> chapterCountEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chapterCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> chapterCountGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'chapterCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> chapterCountLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'chapterCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> chapterCountBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'chapterCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'description',
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'description',
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'description',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'description',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'description',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterFilterCondition> descriptionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'description',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Story, Story, QAfterFilterCondition> fileStatusEqualTo(
       FileStatus value) {
     return QueryBuilder.apply(this, (query) {
@@ -839,6 +1238,42 @@ extension StoryQueryLinks on QueryBuilder<Story, Story, QFilterCondition> {
 }
 
 extension StoryQuerySortBy on QueryBuilder<Story, Story, QSortBy> {
+  QueryBuilder<Story, Story, QAfterSortBy> sortByAuthor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'author', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterSortBy> sortByAuthorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'author', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterSortBy> sortByChapterCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chapterCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterSortBy> sortByChapterCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chapterCount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterSortBy> sortByDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterSortBy> sortByDescriptionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.desc);
+    });
+  }
+
   QueryBuilder<Story, Story, QAfterSortBy> sortByFileStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'fileStatus', Sort.asc);
@@ -889,6 +1324,42 @@ extension StoryQuerySortBy on QueryBuilder<Story, Story, QSortBy> {
 }
 
 extension StoryQuerySortThenBy on QueryBuilder<Story, Story, QSortThenBy> {
+  QueryBuilder<Story, Story, QAfterSortBy> thenByAuthor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'author', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterSortBy> thenByAuthorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'author', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterSortBy> thenByChapterCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chapterCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterSortBy> thenByChapterCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chapterCount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterSortBy> thenByDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Story, Story, QAfterSortBy> thenByDescriptionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.desc);
+    });
+  }
+
   QueryBuilder<Story, Story, QAfterSortBy> thenByFileStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'fileStatus', Sort.asc);
@@ -951,6 +1422,26 @@ extension StoryQuerySortThenBy on QueryBuilder<Story, Story, QSortThenBy> {
 }
 
 extension StoryQueryWhereDistinct on QueryBuilder<Story, Story, QDistinct> {
+  QueryBuilder<Story, Story, QDistinct> distinctByAuthor(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'author', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Story, Story, QDistinct> distinctByChapterCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'chapterCount');
+    });
+  }
+
+  QueryBuilder<Story, Story, QDistinct> distinctByDescription(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'description', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Story, Story, QDistinct> distinctByFileStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'fileStatus');
@@ -982,6 +1473,24 @@ extension StoryQueryProperty on QueryBuilder<Story, Story, QQueryProperty> {
   QueryBuilder<Story, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Story, String?, QQueryOperations> authorProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'author');
+    });
+  }
+
+  QueryBuilder<Story, int?, QQueryOperations> chapterCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'chapterCount');
+    });
+  }
+
+  QueryBuilder<Story, String?, QQueryOperations> descriptionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'description');
     });
   }
 

@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
 enum TriState {
   /// Checkbox off
   ///
@@ -57,4 +60,35 @@ enum SortBy {
 
 enum SortDirection { descending, ascending }
 
-enum DisplayMode { compactGrid, comfortableGrid, coverOnlyGrid, list }
+enum DisplayMode {
+  compactGrid('Compact Grid'),
+  comfortableGrid('Comfortable Grid'),
+  coverOnlyGrid('Cover-Only Grid'),
+  list('List');
+
+  const DisplayMode(this.label);
+  final String label;
+}
+
+enum ReadingMode {
+  pagedLtr('Paged LTR', 'paged_ltr'),
+  pagedRtl('Paged RTL', 'paged_rtl'),
+  pagedVertical('Paged Vertical', 'paged_vertical'),
+  continuous('Continuous', 'continuous');
+
+  const ReadingMode(this.label, this.icon);
+  final String label;
+  final String icon;
+}
+
+enum ScreenRotation {
+  free('Free', Symbols.screen_rotation),
+  portrait('Portrait', Symbols.stay_current_portrait),
+  landscape('Landscape', Symbols.stay_current_landscape),
+  forcePortrait('Force Portrait', Symbols.screen_lock_portrait),
+  forceLandscape('Force Landscape', Symbols.screen_lock_landscape);
+
+  const ScreenRotation(this.label, this.icon);
+  final String label;
+  final IconData icon;
+}

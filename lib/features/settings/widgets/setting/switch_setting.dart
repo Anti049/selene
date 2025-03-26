@@ -29,7 +29,7 @@ class SwitchSettingWidget extends StatelessWidget {
       icon: icon,
       enabled: widgetEnabled,
       onClick: () => preference?.toggle(),
-      subcomponent: Switch(
+      trailing: Switch(
         value: preference?.get() ?? false,
         onChanged: widgetEnabled ? (value) => preference?.set(value) : null,
       ),

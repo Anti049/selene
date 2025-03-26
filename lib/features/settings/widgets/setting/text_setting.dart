@@ -13,6 +13,7 @@ class TextSettingWidget extends StatelessWidget {
     this.icon,
     this.onClick,
     this.enabled = true,
+    this.trailing,
     this.subcomponent,
     this.disabledMessage,
   });
@@ -22,6 +23,7 @@ class TextSettingWidget extends StatelessWidget {
   final IconData? icon;
   final void Function()? onClick;
   final bool enabled;
+  final Widget? trailing;
   final Widget? subcomponent;
   final String? disabledMessage;
 
@@ -33,6 +35,7 @@ class TextSettingWidget extends StatelessWidget {
       icon: icon,
       enabled: enabled,
       onClick: onClick,
+      trailing: trailing,
       subcomponent: subcomponent,
       disabledMessage: disabledMessage,
     );

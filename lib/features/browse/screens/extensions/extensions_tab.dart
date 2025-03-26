@@ -8,8 +8,6 @@ class ExtensionsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Empty(message: 'Extensions is not yet implemented.'),
-    );
+    return Scaffold(body: Empty(message: 'Extensions is not yet implemented.'));
   }
 }

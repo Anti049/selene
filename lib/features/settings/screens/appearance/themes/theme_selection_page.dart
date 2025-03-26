@@ -169,13 +169,9 @@ class _ThemeSelectionScreenState extends ConsumerState<ThemeSelectionScreen> {
                     ),
                     AnimatedVisibility(
                       visible: expandedCategories[category] ?? false,
-                      enter: expandVertically(
-                        curve: Curves.fastEaseInToSlowEaseOut,
-                      ),
+                      enter: expandVertically(curve: Curves.easeInOutCubic),
                       enterDuration: const Duration(milliseconds: 200),
-                      exit: shrinkVertically(
-                        curve: Curves.fastEaseInToSlowEaseOut,
-                      ),
+                      exit: shrinkVertically(curve: Curves.easeInOutCubic),
                       exitDuration: const Duration(milliseconds: 200),
                       child: ThemeSection(
                         title: category.name,
