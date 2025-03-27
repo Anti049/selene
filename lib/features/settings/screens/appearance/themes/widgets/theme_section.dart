@@ -10,7 +10,7 @@ class ThemeSection extends StatelessWidget {
   const ThemeSection({super.key, required this.title, required this.themes});
 
   final String title;
-  final List<AppTheme> themes;
+  final List<SeleneTheme> themes;
 
   @override
   Widget build(BuildContext context) {

@@ -15,6 +15,7 @@ class SortTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final preferences = ref.watch(libraryPreferencesProvider);
     return ListView(
+      shrinkWrap: true,
       children:
           SortBy.values
               .map(

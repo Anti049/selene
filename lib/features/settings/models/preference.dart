@@ -136,3 +136,36 @@ class EnumPreference<Enum> extends Preference<Enum> {
     _preferences.put(key, value.toString());
   }
 }
+
+class EnumListPreference<Enum> extends Preference<List<Enum>> {
+  EnumListPreference(
+    super.key,
+    super.preferences,
+    super.defaultValue,
+    this.values,
+  );
+
+  final Iterable<Enum> values;
+
+  @override
+  List<Enum> read(String key, List<Enum> defaultValue) {
+    final storedList = _preferences.get(
+      key,
+      defaultValue: defaultValue.map((e) => e.toString()).toList(),
+    );
+    return storedList
+        .map(
+          (value) => values.firstWhere(
+            (e) => e.toString() == value,
+            orElse: () => defaultValue.first,
+          ),
+        )
+        .whereType<Enum>()
+        .toList();
+  }
+
+  @override
+  void write(String key, List<Enum> value) {
+    _preferences.put(key, value.map((e) => e.toString()).toList());
+  }
+}

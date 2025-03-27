@@ -11,7 +11,9 @@ import 'package:selene/features/library/providers/library_preferences.dart';
 import 'package:selene/features/library/providers/library_state.dart';
 import 'package:selene/features/library/widgets/library_item/library_list_item.dart';
 import 'package:selene/features/settings/models/preference.dart';
+import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
 import 'package:selene/router/router.gr.dart';
+import 'package:selene/utils/constants.dart';
 import 'package:selene/utils/enums.dart';
 import 'package:selene/utils/theming.dart';
 
@@ -32,6 +34,7 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
   bool get wantKeepAlive => true;
 
   bool _searchActive = false;
+  final _scrollController = ScrollController();
 
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
@@ -238,10 +241,12 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
                 key: _refreshKey,
                 onRefresh: _onRefresh,
                 child: Scrollbar(
+                  controller: _scrollController,
                   interactive: true,
                   thickness: 8.0,
                   radius: Radius.circular(4.0),
                   child: ListView(
+                    controller: _scrollController,
                     shrinkWrap: true,
                     children: [
                       for (final item in libraryModel.libraryItems)
@@ -286,7 +291,11 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            libraryPreferences.displayMode.cycle(DisplayMode.values);
+            // libraryPreferences.displayMode.cycle(DisplayMode.values);
+            ref
+                .read(appearancePreferencesProvider)
+                .themeMode
+                .cycle(ThemeMode.values);
           },
           child: const Icon(Symbols.add),
         ),
@@ -296,10 +305,10 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
             data: (data) => data.selecting,
             orElse: () => false,
           ),
-          enter: slideInVertically(curve: Curves.easeInOutCubic),
-          enterDuration: const Duration(milliseconds: 200),
-          exit: slideOutVertically(curve: Curves.easeInOutCubic),
-          exitDuration: const Duration(milliseconds: 200),
+          enter: slideInVertically(curve: kAnimationCurve),
+          enterDuration: kAnimationDuration,
+          exit: slideOutVertically(curve: kAnimationCurve),
+          exitDuration: kAnimationDuration,
           child: BottomAppBar(
             color: context.scheme.surfaceContainerLow,
             child: Row(

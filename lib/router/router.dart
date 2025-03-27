@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:selene/router/router.gr.dart';
+import 'package:selene/utils/constants.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page|Tab,Route')
 class SeleneRouter extends RootStackRouter {
@@ -32,8 +33,8 @@ class SeleneRouter extends RootStackRouter {
       path: '/library/options',
       page: LibraryOptionsRoute.page,
       transitionsBuilder: TransitionsBuilders.slideRightWithFade,
-      durationInMilliseconds: 200,
-      reverseDurationInMilliseconds: 200,
+      durationInMilliseconds: kAnimationDuration.inMilliseconds,
+      reverseDurationInMilliseconds: kAnimationDuration.inMilliseconds,
       children: [
         AutoRoute(path: 'tags', page: TagsRoute.page),
         AutoRoute(path: 'filters', page: FiltersRoute.page),

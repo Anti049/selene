@@ -10,7 +10,7 @@ import 'package:selene/utils/theming.dart';
 class ThemePreview extends ConsumerWidget {
   const ThemePreview({super.key, required this.theme});
 
-  final AppTheme theme;
+  final SeleneTheme theme;
 
   Widget _buildAppBarPreview(
     BuildContext context,
@@ -204,7 +204,7 @@ class ThemePreview extends ConsumerWidget {
     );
     final contrastLevel = preferences.contrastLevel.get();
     final blendLevel = preferences.blendLevel.get();
-    final isSelected = preferences.themeName.get() == theme.name;
+    final isSelected = preferences.themeID.get() == theme.id;
     ColorScheme scheme = theme.getScheme(
       brightness: brightness,
       contrastLevel: contrastLevel,
@@ -218,7 +218,7 @@ class ThemePreview extends ConsumerWidget {
         children: [
           GestureDetector(
             onTap: () {
-              preferences.themeName.set(theme.name);
+              preferences.themeID.set(theme.id);
             },
             onLongPress: () {
               // Open dialog with theme info
@@ -303,7 +303,7 @@ class ThemePreview extends ConsumerWidget {
           Text(
             theme.name,
             textAlign: TextAlign.center,
-            style: context.text.bodyLarge?.copyWith(
+            style: context.text.bodyMedium?.copyWith(
               color: isSelected ? scheme.primary : scheme.onSurface,
             ),
           ),

@@ -2,11 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
-import 'package:selene/features/settings/screens/appearance/appearance_page.dart';
-import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
 import 'package:selene/features/settings/models/searchable_settings.dart';
 import 'package:selene/features/settings/models/setting.dart';
+import 'package:selene/features/settings/screens/appearance/appearance_page.dart';
+import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
+import 'package:selene/features/settings/screens/appearance/themes/models/theme.dart';
+import 'package:selene/main.dart';
 import 'package:selene/router/router.gr.dart';
+import 'package:selene/utils/theming.dart';
 
 class AppearanceSettings extends ISearchableSettings {
   @override
@@ -28,6 +31,10 @@ class AppearanceSettings extends ISearchableSettings {
   List<ISetting> getSettings(BuildContext context, WidgetRef ref) {
     final appearancePreferences = ref.watch(appearancePreferencesProvider);
 
+    final activeTheme = isarInstance.seleneThemes.getSync(
+      appearancePreferences.themeID.get().id,
+    );
+
     return [
       SettingGroup(
         title: 'Theme',
@@ -44,7 +51,7 @@ class AppearanceSettings extends ISearchableSettings {
           ),
           TextSetting(
             title: 'Theme Selection',
-            subtitle: appearancePreferences.themeName.get(),
+            subtitle: activeTheme?.name,
             icon: Symbols.palette,
             onClick: () => context.router.push(ThemeSelectionRoute()),
           ),

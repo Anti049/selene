@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:isar/isar.dart';
+import 'package:selene/utils/isar.dart';
 
 // Theme data extensions
 extension ThemeDataExtensions on BuildContext {
   ThemeData get theme => Theme.of(this);
   ColorScheme get scheme => theme.colorScheme;
   TextTheme get text => theme.textTheme;
+}
+
+extension ColorExtension on String {
+  Color get color => Color(int.parse(this));
+  Id get id => fastHash(this);
 }
 
 // Brightness utilities

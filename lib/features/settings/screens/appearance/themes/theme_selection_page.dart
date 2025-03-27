@@ -2,14 +2,15 @@ import 'package:animated_visibility/animated_visibility.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:isar/isar.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/common/widgets/padded_appbar.dart';
 import 'package:selene/features/banners/widgets/banner_scaffold.dart';
+import 'package:selene/features/settings/models/preference.dart';
 import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
-import 'package:selene/features/settings/screens/appearance/themes/data/themes.dart';
 import 'package:selene/features/settings/screens/appearance/themes/models/theme.dart';
 import 'package:selene/features/settings/screens/appearance/themes/widgets/theme_section.dart';
-import 'package:selene/features/settings/models/preference.dart';
+import 'package:selene/main.dart';
 import 'package:selene/utils/theming.dart';
 
 @RoutePage()
@@ -34,20 +35,22 @@ class _ThemeSelectionScreenState extends ConsumerState<ThemeSelectionScreen> {
     }
   }
 
-  List<AppTheme> getThemesByCategory(
+  List<SeleneTheme> getThemesByCategory(
     BuildContext context,
     ThemeCategory category,
   ) {
-    // Filter out null themes and group by category
+    // Get all themes of category
     final categoryThemes =
-        themes.values.where((theme) => theme.category == category).toList();
+        isarInstance.seleneThemes
+            .filter()
+            .categoryEqualTo(category)
+            .selectableEqualTo(true)
+            .findAllSync();
     // Sort themes by name
-    categoryThemes.sort((a, b) {
-      return a.name.compareTo(a.name);
-    });
+    categoryThemes.sort((a, b) => a.name.compareTo(b.name));
     // Move "System" theme from sorted index to first
     final systemThemeIndex = categoryThemes.indexWhere(
-      (theme) => theme.name.toLowerCase() == 'system',
+      (theme) => theme.id == 'system',
     );
     if (systemThemeIndex != -1) {
       final systemTheme = categoryThemes.removeAt(systemThemeIndex);
@@ -55,7 +58,7 @@ class _ThemeSelectionScreenState extends ConsumerState<ThemeSelectionScreen> {
     }
     // Move "Dynamic" theme from sorted index to second
     final dynamicThemeIndex = categoryThemes.indexWhere(
-      (theme) => theme.name.toLowerCase() == 'dynamic',
+      (theme) => theme.id == 'dynamic',
     );
     if (dynamicThemeIndex != -1) {
       final dynamicTheme = categoryThemes.removeAt(dynamicThemeIndex);
@@ -65,18 +68,18 @@ class _ThemeSelectionScreenState extends ConsumerState<ThemeSelectionScreen> {
     return categoryThemes;
   }
 
-  Map<ThemeCategory, List<AppTheme>> getThemesByCategoryMap(
+  Map<ThemeCategory, List<SeleneTheme>> getThemesByCategoryMap(
     BuildContext context,
   ) {
-    final themesByCategory = <ThemeCategory, List<AppTheme>>{};
+    final themesByCategory = <ThemeCategory, List<SeleneTheme>>{};
     for (final category in ThemeCategory.values) {
       themesByCategory[category] = getThemesByCategory(context, category);
     }
     return themesByCategory;
   }
 
-  bool isCategorySelected(ThemeCategory category, String themeName) {
-    final selectedTheme = themes[themeName];
+  bool isCategorySelected(ThemeCategory category, String themeID) {
+    final selectedTheme = isarInstance.seleneThemes.getSync(themeID.id);
     return selectedTheme?.category == category;
   }
 
@@ -100,7 +103,7 @@ class _ThemeSelectionScreenState extends ConsumerState<ThemeSelectionScreen> {
   Widget build(BuildContext context) {
     final appearancePreferences = ref.watch(appearancePreferencesProvider);
     final themeMode = appearancePreferences.themeMode;
-    final themeName = appearancePreferences.themeName;
+    final themeID = appearancePreferences.themeID.get();
     final categorizedThemes = getThemesByCategoryMap(context);
 
     return BannerScaffold(
@@ -144,7 +147,7 @@ class _ThemeSelectionScreenState extends ConsumerState<ThemeSelectionScreen> {
                         height: 24.0,
                         decoration: BoxDecoration(
                           color:
-                              isCategorySelected(category, themeName.get())
+                              isCategorySelected(category, themeID)
                                   ? context.scheme.primary
                                   : Colors.transparent,
                           borderRadius: BorderRadius.circular(256.0),
@@ -152,7 +155,7 @@ class _ThemeSelectionScreenState extends ConsumerState<ThemeSelectionScreen> {
                         child: Icon(
                           Symbols.check,
                           color:
-                              isCategorySelected(category, themeName.get())
+                              isCategorySelected(category, themeID)
                                   ? context.scheme.onPrimary
                                   : Colors.transparent,
                           size: 16.0,
@@ -185,7 +188,7 @@ class _ThemeSelectionScreenState extends ConsumerState<ThemeSelectionScreen> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-        color: context.scheme.surfaceContainerLow,
+        // color: context.scheme.surfaceContainerLow,
         child: Row(
           children: [
             IconButton(

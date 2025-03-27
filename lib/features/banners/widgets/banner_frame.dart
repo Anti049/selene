@@ -19,14 +19,17 @@ class BannerFrame extends ConsumerWidget {
       context,
       appearancePrefs.themeMode.get(),
     );
+    final systemNavigationColor =
+        appearancePrefs.usePureBlack.get() || appearancePrefs.einkMode.get()
+            ? context.scheme.surfaceDim
+            : context.scheme.surfaceContainer;
+
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness:
             bannersActive ? appBrightness : appBrightness.invert,
-        systemNavigationBarColor: context.scheme.surfaceContainer.withValues(
-          alpha: 0.75,
-        ),
+        systemNavigationBarColor: systemNavigationColor.withValues(alpha: 0.75),
         systemNavigationBarIconBrightness: appBrightness.invert,
       ),
       child: Scaffold(

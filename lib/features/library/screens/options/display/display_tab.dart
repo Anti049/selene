@@ -14,6 +14,7 @@ class DisplayTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final preferences = ref.watch(libraryPreferencesProvider);
     return ListView(
+      shrinkWrap: true,
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
@@ -89,16 +90,8 @@ class DisplayTab extends ConsumerWidget {
                 preference: preferences.unreadBadge,
               ),
               CheckboxSettingWidget(
-                title: 'Local Chapters',
-                preference: preferences.localBadge,
-              ),
-              CheckboxSettingWidget(
                 title: 'Language',
                 preference: preferences.languageBadge,
-              ),
-              CheckboxSettingWidget(
-                title: 'Source',
-                preference: preferences.sourceBadge,
               ),
               CheckboxSettingWidget(
                 title: 'Continue Reading Button',
@@ -116,14 +109,14 @@ class DisplayTab extends ConsumerWidget {
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Text('Tabs', style: context.text.bodyLarge),
               ),
-              CheckboxSettingWidget(
-                title: 'Show Category Tabs',
-                preference: preferences.showCategoryTabs,
-              ),
-              CheckboxSettingWidget(
-                title: 'Show Favorite Tabs',
-                preference: preferences.showFavoriteTabs,
-              ),
+              // CheckboxSettingWidget(
+              //   title: 'Show Category Tabs',
+              //   preference: preferences.showCategoryTabs,
+              // ),
+              // CheckboxSettingWidget(
+              //   title: 'Show Favorite Tabs',
+              //   preference: preferences.showFavoriteTabs,
+              // ),
               CheckboxSettingWidget(
                 title: 'Show Work Count',
                 preference: preferences.showWorkCount,

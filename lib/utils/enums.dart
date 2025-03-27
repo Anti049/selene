@@ -70,6 +70,23 @@ enum DisplayMode {
   final String label;
 }
 
+enum ReaderOptionButton {
+  readingMode('Reading Mode', Symbols.phonelink_setup),
+  screenRotation('Screen Rotation', Symbols.screen_rotation),
+  readerColors('Reader Colors', Symbols.palette),
+  audiobook('Audiobook', Symbols.audiotrack),
+  settings('Settings', Symbols.settings, fill: 1.0),
+  brightness('Brightness', Symbols.brightness_4),
+  font('Font', Symbols.font_download),
+  fontSize('Font Size', Symbols.format_size),
+  lineHeight('Line Height', Symbols.line_weight);
+
+  const ReaderOptionButton(this.label, this.icon, {this.fill = 1.0});
+  final String label;
+  final IconData icon;
+  final double fill;
+}
+
 enum ReadingMode {
   pagedLtr('Paged LTR', 'paged_ltr'),
   pagedRtl('Paged RTL', 'paged_rtl'),
@@ -84,11 +101,43 @@ enum ReadingMode {
 enum ScreenRotation {
   free('Free', Symbols.screen_rotation),
   portrait('Portrait', Symbols.stay_current_portrait),
-  landscape('Landscape', Symbols.stay_current_landscape),
   forcePortrait('Force Portrait', Symbols.screen_lock_portrait),
+  landscape('Landscape', Symbols.stay_current_landscape),
   forceLandscape('Force Landscape', Symbols.screen_lock_landscape);
 
   const ScreenRotation(this.label, this.icon);
   final String label;
   final IconData icon;
+}
+
+enum ReaderColors {
+  whiteOnBlack('White on Black'),
+  blackOnWhite('Black on White'),
+  whiteOnSepia('White on Sepia'),
+  blackOnSepia('Black on Sepia'),
+  whiteOnGreen('White on Green'),
+  blackOnGreen('Black on Green'),
+  whiteOnBlue('White on Blue'),
+  blackOnBlue('Black on Blue'),
+  whiteOnRed('White on Red'),
+  blackOnRed('Black on Red'),
+  whiteOnYellow('White on Yellow'),
+  blackOnYellow('Black on Yellow'),
+  whiteOnPink('White on Pink'),
+  blackOnPink('Black on Pink'),
+  whiteOnPurple('White on Purple'),
+  blackOnPurple('Black on Purple'),
+  whiteOnOrange('White on Orange'),
+  blackOnOrange('Black on Orange'),
+  whiteOnBrown('White on Brown'),
+  blackOnBrown('Black on Brown'),
+  whiteOnGrey('White on Grey'),
+  blackOnGrey('Black on Grey'),
+  whiteOnCyan('White on Cyan'),
+  blackOnCyan('Black on Cyan'),
+  whiteOnMagenta('White on Magenta'),
+  blackOnMagenta('Black on Magenta');
+
+  const ReaderColors(this.label);
+  final String label;
 }

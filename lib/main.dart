@@ -5,13 +5,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:selene/features/banners/widgets/banner_frame.dart';
 import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
 import 'package:selene/features/settings/screens/appearance/themes/data/themes.dart';
 import 'package:selene/features/settings/screens/appearance/themes/models/theme.dart';
 import 'package:selene/router/router.dart' show SeleneRouter;
+import 'package:selene/utils/isar.dart';
 import 'package:selene/utils/responsive_layout.dart';
+import 'package:selene/utils/theming.dart';
 import 'package:system_theme/system_theme.dart';
 
 late Isar isarInstance;
@@ -25,7 +28,12 @@ void main() async {
   await Hive.openBox('preferences');
 
   // Initialize Isar (for database)
+  final dir = await getApplicationDocumentsDirectory();
+  isarInstance = await Isar.open([SeleneThemeSchema], directory: dir.path);
   // isarInstance = await StorageProvider().initDB(null, inspector: kDebugMode);
+
+  // Load accent color (so it can't be wrong on first run)
+  await SystemTheme.accentColor.load();
 
   runApp(ProviderScope(child: MainApp()));
 }
@@ -42,33 +50,41 @@ class MainApp extends ConsumerWidget {
     // Handle theming
     return SystemThemeBuilder(
       builder: (context, accent) {
-        addTheme(
-          AppTheme(
-            name: 'Dynamic',
-            category: ThemeCategory.system,
-            primary: accent.accent,
-          ),
+        // Add dynamic theme
+        final dynamicTheme = SeleneTheme(
+          id: 'dynamic',
+          name: 'Dynamic',
+          category: ThemeCategory.system,
+          primary: accent.accent.hex,
         );
+        /*final dynamicID = */
+        isarInstance.writeTxnSync(() {
+          return isarInstance.seleneThemes.putSync(dynamicTheme);
+        });
+        // All all built-in themes
+        isarInstance.writeTxnSync(() {
+          for (final theme in themes.values) {
+            // if (isarInstance.seleneThemes.getSync(theme.id.id) != null) {
+            //   continue;
+            // }
+            isarInstance.seleneThemes.putSync(theme);
+          }
+        });
 
-        String themeName = appearancePrefs.themeName.get();
-        if (getThemeByName(themeName) == null) {
-          themeName = 'System';
-          appearancePrefs.themeName.set(themeName);
-        }
         final einkMode = appearancePrefs.einkMode.get();
         final contrastLevel = appearancePrefs.contrastLevel.get();
         final blendLevel = appearancePrefs.blendLevel.get();
         final usePureBlack = appearancePrefs.usePureBlack.get();
-        AppTheme? theme =
-            einkMode
-                ? AppTheme(
-                  name: 'E-Ink',
-                  category: ThemeCategory.system,
-                  primary: Color(0xFF000000),
-                  variant: FlexSchemeVariant.monochrome,
-                )
-                : getThemeByName(themeName) ??
-                    getThemeByCategory(ThemeCategory.system);
+        // Isar Themes
+        final themeID = einkMode ? 'monochrome' : appearancePrefs.themeID.get();
+        SeleneTheme? selectedTheme =
+            themeID == 'dynamic'
+                ? dynamicTheme
+                : isarInstance.seleneThemes.getSync(fastHash(themeID));
+        if (selectedTheme == null) {
+          appearancePrefs.themeID.set('system');
+          selectedTheme = isarInstance.seleneThemes.getSync('system'.id);
+        }
 
         // Handle brightness for system icons
         // final appBrightness = calculateBrightness(
@@ -89,12 +105,12 @@ class MainApp extends ConsumerWidget {
 
         return MaterialApp.router(
           themeMode: appearancePrefs.themeMode.get(),
-          theme: theme?.light(
+          theme: selectedTheme?.light(
             contrastLevel: contrastLevel,
             blendLevel: blendLevel,
             einkMode: einkMode,
           ),
-          darkTheme: theme?.dark(
+          darkTheme: selectedTheme?.dark(
             contrastLevel: contrastLevel,
             blendLevel: blendLevel,
             usePureBlack: usePureBlack,

@@ -10,6 +10,17 @@ class ReaderPreferences {
   ReaderPreferences(this._preferences);
   final PreferenceStore _preferences;
 
+  // Button Options
+  Preference<List<ReaderOptionButton>> get buttonOptions =>
+      _preferences.getEnumList('button_options', [
+        ReaderOptionButton.readingMode,
+        ReaderOptionButton.screenRotation,
+        ReaderOptionButton.readerColors,
+        ReaderOptionButton.settings,
+      ], ReaderOptionButton.values);
+  Preference<bool> get multiLineButtons =>
+      _preferences.getBool('multi_line_buttons', defaultValue: false);
+
   // Reading Mode
   Preference<ReadingMode> get readingMode => _preferences.getEnum(
     'reading_mode',

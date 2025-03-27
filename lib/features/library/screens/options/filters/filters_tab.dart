@@ -12,6 +12,7 @@ class FiltersTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final preferences = ref.watch(libraryPreferencesProvider);
     return ListView(
+      shrinkWrap: true,
       children: [
         CheckboxSettingWidget(
           title: 'Downloaded',

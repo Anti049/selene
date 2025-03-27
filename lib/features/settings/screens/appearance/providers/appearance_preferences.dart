@@ -13,8 +13,8 @@ class AppearancePreferences {
   Preference<ThemeMode> get themeMode =>
       _preferences.getEnum('theme_mode', ThemeMode.system, ThemeMode.values);
 
-  Preference<String> get themeName =>
-      _preferences.getString('theme_name', defaultValue: 'system');
+  Preference<String> get themeID =>
+      _preferences.getString('theme_id', defaultValue: 'system');
 
   Preference<double> get contrastLevel =>
       _preferences.getDouble('contrast_level', defaultValue: 0.0);

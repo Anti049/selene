@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/features/banners/providers/banners_provider.dart';
-import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
+import 'package:selene/utils/constants.dart';
 import 'package:selene/utils/theming.dart';
 
 class PaddedAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -38,9 +38,9 @@ class PaddedAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   List<Widget> get _actions {
     if (actions == null) return [];
-    if (actions!.length <= 2) return actions ?? [];
+    if (actions!.length <= kAppbarActions) return actions ?? [];
     return [
-      ...actions!.sublist(0, 2),
+      ...actions!.sublist(0, kAppbarActions),
       MenuAnchor(
         controller: _menuController,
         menuChildren:
@@ -66,20 +66,13 @@ class PaddedAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final preferences = ref.watch(appearancePreferencesProvider);
     final bannersActive = ref.watch(bannersActiveProvider);
     return AnimatedVisibility(
       visible: visible ?? true,
-      enter: slideInVertically(
-        initialOffsetY: -1.0,
-        curve: Curves.easeInOutCubic,
-      ),
-      enterDuration: const Duration(milliseconds: 200),
-      exit: slideOutVertically(
-        targetOffsetY: -1.0,
-        curve: Curves.easeInOutCubic,
-      ),
-      exitDuration: const Duration(milliseconds: 200),
+      enter: slideInVertically(initialOffsetY: -1.0, curve: kAnimationCurve),
+      enterDuration: kAnimationDuration,
+      exit: slideOutVertically(targetOffsetY: -1.0, curve: kAnimationCurve),
+      exitDuration: kAnimationDuration,
       child: AppBar(
         primary: !bannersActive,
         backgroundColor: backgroundColor,

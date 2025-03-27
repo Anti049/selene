@@ -9,6 +9,7 @@ class TagsTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView(
+      shrinkWrap: true,
       children: [
         ListTile(title: const Text('Tag 1'), onTap: () {}),
         ListTile(title: const Text('Tag 2'), onTap: () {}),

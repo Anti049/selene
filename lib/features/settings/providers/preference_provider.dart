@@ -51,6 +51,12 @@ class PreferenceStore {
     (List<T> list) => list.map((e) => e.toString()).join(','),
     (String s) => s.split(',').map((e) => defaultValue.first).toList(),
   );
+
+  Preference<List<Enum>> getEnumList<Enum>(
+    String key,
+    List<Enum> defaultValue,
+    Iterable<Enum> values,
+  ) => EnumListPreference(key, _preferences, defaultValue, values);
 }
 
 @riverpod
