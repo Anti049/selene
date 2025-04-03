@@ -121,6 +121,26 @@ class DisplayTab extends ConsumerWidget {
                 title: 'Show Work Count',
                 preference: preferences.showWorkCount,
               ),
+              CheckboxSettingWidget(
+                title: 'Show Character Tags',
+                preference: preferences.showCharacterTags,
+              ),
+              CheckboxSettingWidget(
+                title: 'Show Friendship Tags',
+                preference: preferences.showFriendshipTags,
+              ),
+              CheckboxSettingWidget(
+                title: 'Show Relationship Tags',
+                preference: preferences.showRelationshipTags,
+              ),
+              CheckboxSettingWidget(
+                title: 'Show Freeform Tags',
+                preference: preferences.showFreeformTags,
+              ),
+              CheckboxSettingWidget(
+                title: 'Show Description',
+                preference: preferences.showDescription,
+              ),
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:selene/common/widgets/empty.dart';
 import 'package:selene/common/widgets/padded_appbar.dart';
 import 'package:selene/core/providers/data_providers.dart';
 import 'package:selene/domain/entities/tag_entity.dart';
@@ -236,10 +237,11 @@ class _WorkDetailsPageState extends ConsumerState<WorkDetailsPage> {
                                     onTap: () {},
                                     child: Container(
                                       alignment: Alignment.center,
-                                      child: Icon(
-                                        Symbols.add_photo_alternate,
-                                        size: 64.0,
-                                        color: context.scheme.onSurface,
+                                      child: Empty(
+                                        style: context.text.titleLarge
+                                            ?.copyWith(
+                                              color: context.scheme.onSurface,
+                                            ),
                                       ),
                                     ),
                                   ),

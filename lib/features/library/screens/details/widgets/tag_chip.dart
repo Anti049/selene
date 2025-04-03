@@ -11,8 +11,10 @@ class TagChip extends StatelessWidget {
 
   IconData? get icon {
     return switch (tag.type) {
-      TagType.character => Symbols.person,
+      TagType.info => null,
       TagType.fandom => Symbols.auto_stories,
+      TagType.character => Symbols.person,
+      TagType.friendship => Symbols.group,
       TagType.relationship => Symbols.favorite,
       TagType.freeform => null,
       TagType.other => null,
@@ -21,18 +23,22 @@ class TagChip extends StatelessWidget {
 
   Color backgroundColor(BuildContext context) {
     return switch (tag.type) {
-      TagType.character => context.scheme.tertiaryContainer,
+      TagType.info => context.scheme.primaryContainer,
       TagType.fandom => context.scheme.primaryContainer,
-      TagType.relationship => context.scheme.secondaryContainer,
+      TagType.character => context.scheme.secondaryContainer,
+      TagType.friendship => context.scheme.tertiaryContainer,
+      TagType.relationship => context.scheme.tertiary,
       _ => context.scheme.surfaceContainer,
     };
   }
 
   Color textColor(BuildContext context) {
     return switch (tag.type) {
-      TagType.character => context.scheme.onTertiaryContainer,
+      TagType.info => context.scheme.onPrimaryContainer,
       TagType.fandom => context.scheme.onPrimaryContainer,
-      TagType.relationship => context.scheme.onSecondaryContainer,
+      TagType.character => context.scheme.onSecondaryContainer,
+      TagType.friendship => context.scheme.onTertiaryContainer,
+      TagType.relationship => context.scheme.onTertiary,
       _ => context.scheme.onSurfaceVariant,
     };
   }

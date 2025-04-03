@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/common/widgets/padded_appbar.dart';
+import 'package:selene/core/constants/animation_constants.dart';
 import 'package:selene/features/banners/widgets/banner_scaffold.dart';
 import 'package:selene/features/settings/models/preference.dart';
 import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
@@ -172,10 +173,10 @@ class _ThemeSelectionScreenState extends ConsumerState<ThemeSelectionScreen> {
                     ),
                     AnimatedVisibility(
                       visible: expandedCategories[category] ?? false,
-                      enter: expandVertically(curve: Curves.easeInOutCubic),
-                      enterDuration: const Duration(milliseconds: 200),
-                      exit: shrinkVertically(curve: Curves.easeInOutCubic),
-                      exitDuration: const Duration(milliseconds: 200),
+                      enter: expandVertically(curve: kAnimationCurve),
+                      enterDuration: kAnimationDuration,
+                      exit: shrinkVertically(curve: kAnimationCurve),
+                      exitDuration: kAnimationDuration,
                       child: ThemeSection(
                         title: category.name,
                         themes: categorizedThemes[category]!,

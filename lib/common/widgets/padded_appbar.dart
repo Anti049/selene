@@ -45,7 +45,7 @@ class PaddedAppBar extends ConsumerWidget implements PreferredSizeWidget {
       MenuAnchor(
         controller: _menuController,
         menuChildren:
-            actions!.sublist(2).map((e) {
+            actions!.sublist(kAppbarActions).map((e) {
               if (e is! IconButton) return e;
               return MenuItemButton(
                 onPressed: e.onPressed,

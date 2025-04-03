@@ -23,4 +23,12 @@ class TagEntity {
   }) : id = name.toKebabCase().replaceAll(RegExp(r'[^a-zA-Z0-9-/]'), '');
 }
 
-enum TagType { fandom, character, relationship, freeform, other }
+enum TagType {
+  info,
+  fandom,
+  character,
+  friendship,
+  relationship,
+  freeform,
+  other,
+}

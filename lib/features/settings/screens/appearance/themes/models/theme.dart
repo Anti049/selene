@@ -536,6 +536,7 @@ class SeleneTheme with _$SeleneTheme {
         // unselectedToggleIsColored: true,
         // appBarBackgroundSchemeColor:
         //     usePureBlack || einkMode ? SchemeColor.black : null,
+        appBarBackgroundSchemeColor: SchemeColor.surfaceContainer,
         bottomNavigationBarBackgroundSchemeColor:
             usePureBlack || einkMode
                 ? SchemeColor.surfaceDim
@@ -545,6 +546,8 @@ class SeleneTheme with _$SeleneTheme {
                 ? SchemeColor.surfaceDim
                 : SchemeColor.surfaceContainer,
         bottomNavigationBarElevation: 8.0,
+        menuPadding: EdgeInsets.all(0.0),
+        menuSchemeColor: SchemeColor.surfaceContainerHigh,
         inputDecoratorRadius: 24.0,
         chipRadius: 24.0,
         dialogBackgroundSchemeColor: SchemeColor.surface,

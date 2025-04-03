@@ -34,7 +34,7 @@ class _AddWorkDialogState extends State<AddWorkDialog> {
         title: 'Work Title ${Random().nextInt(1000)}', // Placeholder title
         url: url,
         authors: List<AuthorEntity>.generate(
-          Random().nextInt(3) + 1,
+          Random().nextInt(9) + 1,
           (index) => AuthorEntity(
             name: 'Author ${index + 1}', // Placeholder author names
             url: 'http://example.com/author${index + 1}',

@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/common/widgets/empty.dart';
+import 'package:selene/common/widgets/intent_frame.dart';
 import 'package:selene/common/widgets/padded_appbar.dart';
-import 'package:selene/common/widgets/refresh.dart';
 import 'package:selene/core/constants/animation_constants.dart';
 import 'package:selene/core/providers/data_providers.dart';
-import 'package:selene/domain/entities/author_entity.dart';
-import 'package:selene/domain/entities/tag_entity.dart';
 import 'package:selene/domain/entities/work_entity.dart';
 import 'package:selene/features/banners/widgets/banner_scaffold.dart';
+import 'package:selene/features/library/models/library_model.dart';
 import 'package:selene/features/library/providers/library_preferences.dart';
 import 'package:selene/features/library/providers/library_state.dart';
 import 'package:selene/features/library/widgets/add_work_dialog.dart';
@@ -39,6 +38,7 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
 
   bool _searchActive = false;
   final _scrollController = ScrollController();
+  final _menuController = MenuController();
 
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
@@ -50,10 +50,10 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
   }
 
   IconButton? _getLeading(BuildContext context) {
-    final libraryState = ref.watch(libraryStateProvider);
-    final libraryNotifier = ref.read(libraryStateProvider.notifier);
+    final state = ref.watch(libraryStateProvider);
+    final notifier = ref.read(libraryStateProvider.notifier);
 
-    final selectionActive = libraryState.maybeWhen(
+    final selectionActive = state.maybeWhen(
       data: (data) => data.selecting,
       orElse: () => false,
     );
@@ -73,7 +73,7 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
       return IconButton(
         icon: const Icon(Symbols.close),
         onPressed: () {
-          libraryNotifier.clearSelection();
+          notifier.clearSelection();
         },
       );
     }
@@ -81,39 +81,53 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
     return null;
   }
 
+  Widget _getTitle(BuildContext context) {
+    final notifier = ref.read(libraryStateProvider.notifier);
+
+    return _searchActive
+        ? TextField(
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: 'Search...',
+            border: InputBorder.none,
+          ),
+          onChanged: (value) {
+            notifier.search(value);
+            notifier.refresh();
+          },
+        )
+        : const Text('Library');
+  }
+
   List<Widget> _getActions(BuildContext context) {
     final router = AutoRouter.of(context);
-    final preferences = ref.watch(libraryPreferencesProvider);
-    final optionsActive = preferences.optionsActive;
-    final numOptionsActive = preferences.numOptionsActive;
-    final libraryState = ref.watch(libraryStateProvider);
-    final libraryNotifier = ref.read(libraryStateProvider.notifier);
+    final prefs = ref.watch(libraryPreferencesProvider);
+    final state = ref.watch(libraryStateProvider);
+    final notifier = ref.read(libraryStateProvider.notifier);
 
-    final selectionActive = libraryState.maybeWhen(
+    final selectionActive = state.maybeWhen(
       data: (data) => data.selecting,
       orElse: () => false,
     );
 
-    switch (selectionActive) {
-      case true:
-        return [
+    return selectionActive
+        ? [
           // Select All
           IconButton(
             icon: const Icon(Symbols.select_all),
             onPressed: () {
-              libraryNotifier.selectAll();
+              notifier.selectAll();
             },
           ),
           // Invert Selection
           IconButton(
             icon: const Icon(Symbols.flip_to_back),
             onPressed: () {
-              libraryNotifier.invertSelection();
+              notifier.invertSelection();
             },
           ),
-        ];
-      case false:
-        return [
+        ]
+        : [
           if (!_searchActive)
             IconButton(
               onPressed: () {
@@ -123,19 +137,44 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
               },
               icon: const Icon(Symbols.search),
             ),
-          IconButton(
-            icon: Badge(
-              label: Text(numOptionsActive.toString()),
-              isLabelVisible: optionsActive,
-              child: Icon(
-                Symbols.filter_alt,
-                color: optionsActive ? context.scheme.primary : null,
-                fill: optionsActive ? 1.0 : 0.0,
+          MenuAnchor(
+            controller: _menuController,
+            menuChildren: [
+              MenuItemButton(
+                onPressed: () {},
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  child: const Text('Filter Options'),
+                ),
               ),
+              MenuItemButton(
+                onPressed: () => router.push(const LibraryOptionsRoute()),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  child: const Text('Filter by Tag'),
+                ),
+              ),
+            ],
+            child: IconButton(
+              icon: Badge(
+                label: Text(prefs.numOptionsActive.toString()),
+                isLabelVisible: prefs.optionsActive,
+                child: Icon(
+                  Symbols.filter_alt,
+                  color: prefs.optionsActive ? context.scheme.primary : null,
+                  fill: prefs.optionsActive ? 1.0 : 0.0,
+                ),
+              ),
+              onPressed: () {
+                _menuController.toggle();
+              },
             ),
-            onPressed: () {
-              router.push(const LibraryOptionsRoute());
-            },
           ),
           const SizedBox(),
           IconButton(
@@ -164,12 +203,165 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
             tooltip: 'Library Settings',
           ),
         ];
+  }
+
+  Widget _getContent(BuildContext context, LibraryModel model) {
+    final prefs = ref.watch(libraryPreferencesProvider);
+    final notifier = ref.read(libraryStateProvider.notifier);
+
+    if (model.isEmpty) {
+      return const Empty(message: 'No works found.');
     }
+
+    final children = [
+      for (final item in model.libraryItems)
+        switch (prefs.displayMode.get()) {
+          // Handle the display mode for each item
+          DisplayMode.compactGrid ||
+          DisplayMode.comfortableGrid ||
+          DisplayMode.coverOnlyGrid => const SizedBox(),
+          DisplayMode.list => LibraryListItem(
+            work: item.work,
+            selected: model.isSelected(item),
+            onTap: () {
+              if (model.selecting) {
+                notifier.toggleSelection(item);
+              } else {
+                context.router.push(WorkDetailsRoute(work: item.work));
+              }
+            },
+            onLongPress: () {
+              if (model.selecting) {
+                notifier.toggleRangeSelection(item);
+              } else {
+                notifier.toggleSelection(item);
+              }
+            },
+            onSwipeRight: (context) {},
+            onSwipeLeft: (context) {},
+          ),
+          DisplayMode.componentList => LibraryItemComponent(
+            work: item.work,
+            selected: model.isSelected(item),
+            onTap: () {
+              if (model.selecting) {
+                notifier.toggleSelection(item);
+              } else {
+                context.router.push(WorkDetailsRoute(work: item.work));
+              }
+            },
+            onLongPress: () {
+              if (model.selecting) {
+                notifier.toggleRangeSelection(item);
+              } else {
+                notifier.toggleSelection(item);
+              }
+            },
+            onSwipeRight: (context) {},
+            onSwipeLeft: (context) {},
+          ),
+        },
+      SizedBox(height: kFloatingActionButtonMargin * 1.5 + 56.0),
+    ];
+
+    return Scrollbar(
+      controller: _scrollController,
+      interactive: true,
+      thickness: 4.0,
+      radius: const Radius.circular(4.0),
+      trackVisibility: true,
+      child: switch (prefs.displayMode.get()) {
+        DisplayMode.compactGrid ||
+        DisplayMode.comfortableGrid ||
+        DisplayMode.coverOnlyGrid => Empty(
+          message: '"${prefs.displayMode.get().label}" Not Implemented',
+          subtitle: 'Please select a different display mode.',
+        ),
+        DisplayMode.list || DisplayMode.componentList => Padding(
+          padding: const EdgeInsets.only(top: 4.0),
+          child: ListView(
+            controller: _scrollController,
+            shrinkWrap: true,
+            children: children,
+          ),
+        ),
+      },
+    );
+  }
+
+  Widget _getBottomSheet(BuildContext context) {
+    final state = ref.watch(libraryStateProvider);
+    final workRepository = ref.read(workRepositoryProvider);
+
+    return AnimatedVisibility(
+      visible: state.maybeWhen(
+        data: (data) => data.selecting,
+        orElse: () => false,
+      ),
+      enter: slideInVertically(curve: kAnimationCurve),
+      enterDuration: kAnimationDuration,
+      exit: slideOutVertically(curve: kAnimationCurve),
+      exitDuration: kAnimationDuration,
+      child: BottomAppBar(
+        color: context.scheme.surfaceContainerLow,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: const Icon(Symbols.label),
+              tooltip: 'Set Category',
+              onPressed: () {
+                // Handle archive action
+              },
+            ),
+            IconButton(
+              icon: const Icon(Symbols.done_all),
+              tooltip: 'Mark as Read',
+              onPressed: () {
+                // Handle share action
+              },
+            ),
+            IconButton(
+              icon: const Icon(Symbols.remove_done),
+              tooltip: 'Mark as Unread',
+              onPressed: () {
+                // Handle share action
+              },
+            ),
+            IconButton(
+              icon: const Icon(Symbols.download),
+              tooltip: 'Download',
+              onPressed: () {
+                // Handle share action
+              },
+            ),
+            IconButton(
+              icon: const Icon(Symbols.delete),
+              tooltip: 'Delete',
+              onPressed: () async {
+                final selectedWorks =
+                    state.maybeWhen(
+                          data:
+                              (data) =>
+                                  data.selectedItems
+                                      .map((e) => e.work.id)
+                                      .toList(),
+                          orElse: () => [],
+                        )
+                        as List<String>;
+                workRepository.deleteWorks(selectedWorks);
+                _refreshKey.currentState?.show();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _onRefresh() async {
-    final libraryNotifier = ref.read(libraryStateProvider.notifier);
-    await libraryNotifier.refresh();
+    final notifier = ref.read(libraryStateProvider.notifier);
+    await notifier.refresh();
   }
 
   @override
@@ -177,50 +369,33 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
     super.build(context);
 
     // Get providers
-    final libraryState = ref.watch(libraryStateProvider);
-    final libraryNotifier = ref.read(libraryStateProvider.notifier);
-    final libraryPreferences = ref.watch(libraryPreferencesProvider);
+    final state = ref.watch(libraryStateProvider);
+    final notifier = ref.read(libraryStateProvider.notifier);
     final workRepository = ref.read(workRepositoryProvider);
 
     return PopScope(
       canPop:
           !_searchActive &&
-          !libraryState.maybeWhen(
-            data: (data) => data.selecting,
-            orElse: () => false,
-          ),
+          !state.maybeWhen(data: (data) => data.selecting, orElse: () => false),
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           setState(() {
             _searchActive = false;
-            libraryNotifier.clearSelection();
+            notifier.clearSelection();
           });
         }
       },
       child: BannerScaffold(
         appBar: PaddedAppBar(
-          title:
-              _searchActive
-                  ? TextField(
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      border: InputBorder.none,
-                    ),
-                    onChanged: (value) {
-                      libraryNotifier.search(value);
-                      libraryNotifier.refresh();
-                    },
-                  )
-                  : const Text('Library'),
           leading: _getLeading(context),
+          title: _getTitle(context),
           actions: _getActions(context),
         ),
-        body: libraryState.when(
+        body: state.when(
           loading: () => Empty(message: 'Loading...'),
           error: (error, stackTrace) {
             debugPrintStack(label: error.toString(), stackTrace: stackTrace);
-            return SmartRefreshIndicator(
+            return IntentFrame(
               refreshKey: _refreshKey,
               onRefresh: _onRefresh,
               child: Empty(
@@ -229,105 +404,11 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
               ),
             );
           },
-          data: (libraryModel) {
-            if (libraryModel.isEmpty) {
-              return SmartRefreshIndicator(
-                refreshKey: _refreshKey,
-                onRefresh: _onRefresh,
-                child: Empty(message: 'No works found.'),
-              );
-            }
-
-            bool isList =
-                libraryPreferences.displayMode.get() == DisplayMode.list;
-            bool isComponentList =
-                libraryPreferences.displayMode.get() ==
-                DisplayMode.componentList;
-
-            if (isList || isComponentList) {
-              return SmartRefreshIndicator(
-                refreshKey: _refreshKey,
-                onRefresh: _onRefresh,
-                child: Scrollbar(
-                  controller: _scrollController,
-                  interactive: true,
-                  thickness: 8.0,
-                  radius: Radius.circular(4.0),
-                  child: ListView(
-                    controller: _scrollController,
-                    shrinkWrap: true,
-                    children: [
-                      for (final item in libraryModel.libraryItems)
-                        if (isList)
-                          LibraryListItem(
-                            work: item.work,
-                            selected: libraryModel.isSelected(item),
-                            onTap: () {
-                              if (libraryModel.selecting) {
-                                libraryNotifier.toggleSelection(item);
-                                return;
-                              }
-                              context.router.push(
-                                WorkDetailsRoute(work: item.work),
-                              );
-                            },
-                            onLongPress: () {
-                              if (libraryModel.selecting) {
-                                libraryNotifier.toggleRangeSelection(item);
-                                return;
-                              }
-                              libraryNotifier.toggleSelection(item);
-                            },
-                            onSwipeRight: (context) {
-                              libraryNotifier.toggleSelection(item);
-                            },
-                            onSwipeLeft: (context) {
-                              libraryNotifier.toggleSelection(item);
-                            },
-                          )
-                        else
-                          LibraryItemComponent(
-                            work: item.work,
-                            selected: libraryModel.isSelected(item),
-                            onTap: () {
-                              if (libraryModel.selecting) {
-                                libraryNotifier.toggleSelection(item);
-                                return;
-                              }
-                              context.router.push(
-                                WorkDetailsRoute(work: item.work),
-                              );
-                            },
-                            onLongPress: () {
-                              if (libraryModel.selecting) {
-                                libraryNotifier.toggleRangeSelection(item);
-                                return;
-                              }
-                              libraryNotifier.toggleSelection(item);
-                            },
-                            onSwipeRight: (context) {
-                              libraryNotifier.toggleSelection(item);
-                            },
-                            onSwipeLeft: (context) {
-                              libraryNotifier.toggleSelection(item);
-                            },
-                          ),
-                      // Padding to clear the FAB
-                      const SizedBox(height: 56.0 + 16.0),
-                    ],
-                  ),
-                ),
-              );
-            }
-
-            return SmartRefreshIndicator(
+          data: (model) {
+            return IntentFrame(
               refreshKey: _refreshKey,
               onRefresh: _onRefresh,
-              child: Empty(
-                message:
-                    '"${libraryPreferences.displayMode.get().label}" Not Implemented',
-                subtitle: 'Please select a different display mode.',
-              ),
+              child: _getContent(context, model),
             );
           },
         ),
@@ -350,7 +431,7 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
-                libraryNotifier.refresh();
+                notifier.refresh();
               } catch (e) {
                 // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -362,71 +443,18 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
           child: const Icon(Symbols.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        bottomNavigationBar: AnimatedVisibility(
-          visible: libraryState.maybeWhen(
-            data: (data) => data.selecting,
-            orElse: () => false,
-          ),
-          enter: slideInVertically(curve: kAnimationCurve),
-          enterDuration: kAnimationDuration,
-          exit: slideOutVertically(curve: kAnimationCurve),
-          exitDuration: kAnimationDuration,
-          child: BottomAppBar(
-            color: context.scheme.surfaceContainerLow,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: const Icon(Symbols.label),
-                  tooltip: 'Set Category',
-                  onPressed: () {
-                    // Handle archive action
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Symbols.done_all),
-                  tooltip: 'Mark as Read',
-                  onPressed: () {
-                    // Handle share action
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Symbols.remove_done),
-                  tooltip: 'Mark as Unread',
-                  onPressed: () {
-                    // Handle share action
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Symbols.download),
-                  tooltip: 'Download',
-                  onPressed: () {
-                    // Handle share action
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Symbols.delete),
-                  tooltip: 'Delete',
-                  onPressed: () async {
-                    final selectedWorks =
-                        libraryState.maybeWhen(
-                              data:
-                                  (data) =>
-                                      data.selectedItems
-                                          .map((e) => e.work.id)
-                                          .toList(),
-                              orElse: () => [],
-                            )
-                            as List<String>;
-                    workRepository.deleteWorks(selectedWorks);
-                    _refreshKey.currentState?.show();
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
+        bottomNavigationBar: _getBottomSheet(context),
       ),
     );
+  }
+}
+
+extension on MenuController {
+  void toggle() {
+    if (isOpen) {
+      close();
+    } else {
+      open();
+    }
   }
 }

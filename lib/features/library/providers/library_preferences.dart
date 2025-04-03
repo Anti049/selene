@@ -134,6 +134,16 @@ class LibraryPreferences {
       _preferences.getBool("showFavoriteTabs", defaultValue: true);
   Preference<bool> get showWorkCount =>
       _preferences.getBool("showWorkCount", defaultValue: true);
+  Preference<bool> get showCharacterTags =>
+      _preferences.getBool("showCharacterTags", defaultValue: false);
+  Preference<bool> get showFriendshipTags =>
+      _preferences.getBool("showFriendshipTags", defaultValue: false);
+  Preference<bool> get showRelationshipTags =>
+      _preferences.getBool("showRelationshipTags", defaultValue: false);
+  Preference<bool> get showFreeformTags =>
+      _preferences.getBool("showFreeformTags", defaultValue: false);
+  Preference<bool> get showDescription =>
+      _preferences.getBool("showDescription", defaultValue: true);
 }
 
 @riverpod
