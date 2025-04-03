@@ -1,15 +1,15 @@
 import 'dart:math';
 
 import 'package:dartx/dartx.dart';
-import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart' hide DebounceExtensions;
+import 'package:selene/core/providers/data_providers.dart';
+import 'package:selene/domain/entities/work_entity.dart';
 import 'package:selene/features/library/models/item_preferences.dart';
 import 'package:selene/features/library/models/library_item.dart';
 import 'package:selene/features/library/models/library_model.dart';
 import 'package:selene/features/library/providers/library_preferences.dart';
 import 'package:selene/features/more/providers/more_preferences.dart';
-import 'package:selene/features/story/models/story.dart';
 import 'package:selene/utils/enums.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -101,31 +101,54 @@ class LibraryState extends _$LibraryState {
   }
 
   /// Get library items stream
-  Stream<List<LibraryItem>> _getLibraryItems() {
+  Stream<List<LibraryItem>> _getLibraryItems() async* {
     // Get preferences
-    // final libraryPrefs = ref.watch(libraryPreferencesProvider);
+    final libraryPrefs = ref.watch(libraryPreferencesProvider);
+    final worksRepository = ref.watch(workRepositoryProvider);
 
-    // Sample stories
-    final libraryItems = [
-      ...List.generate(
-        20,
-        (index) => LibraryItem(
-          id: index,
-          story: Story(
-            title: 'Sample Story ${index + 1}',
-            url: '',
-            author: 'Author ${index + 1}',
-            description: loremIpsum(words: 60),
-            chapterCount: Random().nextInt(99) + 1,
-          ),
-        ),
-      ),
-    ];
+    // Get works from database
+    List<WorkEntity> works = await worksRepository.getWorks();
+    // final works = await ref.read(workRepositoryProvider).getWorks();
+
+    // Filter works
+    works =
+        works.where((work) {
+          // Examples: downloaded, unread, etc.
+          return true;
+        }).toList();
+
+    // Sort works
+    final sortBy = libraryPrefs.sortBy.get();
+    final sortDirection = libraryPrefs.sortDirection.get();
+    final dirMultiplier = sortDirection == SortDirection.ascending ? 1 : -1;
+    works.sort((a, b) {
+      int comparison = 0;
+      switch (sortBy) {
+        case SortBy.alphabetically:
+          comparison = a.title.compareTo(b.title);
+          break;
+        // case SortBy.author:
+        //   comparison = (a.authors.firstOrNull ?? '').compareTo(
+        //     b.authors.firstOrNull ?? '',
+        //   );
+        //   break;
+        // ... implement other sort cases based on WorkEntity properties ...
+        default:
+          comparison = a.title.compareTo(b.title);
+      }
+      return comparison * dirMultiplier;
+    });
+
+    // Convert works to library items
+    final libraryItems =
+        works.mapIndexed((index, work) {
+          return LibraryItem(id: index, work: work);
+        }).toList();
 
     // Get library items stream
     final libraryItemsStream = Stream.value(libraryItems);
 
-    return libraryItemsStream;
+    yield* libraryItemsStream;
   }
 
   // Search

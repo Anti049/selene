@@ -14,8 +14,8 @@ extension GetSeleneThemeCollection on Isar {
 }
 
 const SeleneThemeSchema = CollectionSchema(
-  name: r'SeleneTheme',
-  id: -765278944760261546,
+  name: r'themes',
+  id: 5413617843239542158,
   properties: {
     r'category': PropertySchema(
       id: 0,

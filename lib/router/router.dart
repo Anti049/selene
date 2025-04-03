@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:selene/core/constants/animation_constants.dart';
 import 'package:selene/router/router.gr.dart';
-import 'package:selene/utils/constants.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page|Tab,Route')
 class SeleneRouter extends RootStackRouter {
@@ -42,7 +42,7 @@ class SeleneRouter extends RootStackRouter {
         AutoRoute(path: 'display', page: DisplayRoute.page),
       ],
     ),
-    AutoRoute(path: '/library/details/:id', page: StoryDetailsRoute.page),
+    AutoRoute(path: '/library/details/:id', page: WorkDetailsRoute.page),
     AutoRoute(path: '/reader/:id', page: ReaderRoute.page),
     AutoRoute(path: '/settings', page: SettingsRoute.page),
     AutoRoute(path: '/settings/appearance', page: AppearanceSettingsRoute.page),

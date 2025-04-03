@@ -2,25 +2,8 @@ import 'dart:math';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:selene/common/widgets/action_button.dart';
+import 'package:selene/core/constants/empty_constants.dart';
 import 'package:selene/utils/theming.dart';
-
-const List<String> _errorFaces = [
-  "(･o･;)",
-  "Σ(ಠ_ಠ)",
-  "ಥ_ಥ",
-  "(˘･_･˘)",
-  "(；￣Д￣)",
-  "(･Д･。",
-  "(╯︵╰,)",
-  "૮(˶ㅠ︿ㅠ)ა",
-  "(っ◞‸◟ c)",
-  "｡°(°.◜ᯅ◝°)°｡",
-  "(≥o≤)",
-  "(╥﹏╥)",
-  "(´；д；`)",
-  "( •ө• )",
-  "(·•᷄‎ࡇ•᷅ )",
-];
 
 class EmptyAction {
   const EmptyAction({
@@ -51,7 +34,7 @@ class _EmptyState extends State<Empty> {
 
   @override
   void initState() {
-    _errorIndex = Random().nextInt(_errorFaces.length);
+    _errorIndex = Random().nextInt(kEmptyFaces.length);
 
     super.initState();
   }
@@ -63,7 +46,7 @@ class _EmptyState extends State<Empty> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          _errorFaces[_errorIndex],
+          kEmptyFaces[_errorIndex],
           style: context.text.displayMedium?.copyWith(
             color: context.scheme.secondary,
           ),

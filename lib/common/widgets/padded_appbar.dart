@@ -2,8 +2,9 @@ import 'package:animated_visibility/animated_visibility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:selene/core/constants/animation_constants.dart';
+import 'package:selene/core/constants/ui_constants.dart';
 import 'package:selene/features/banners/providers/banners_provider.dart';
-import 'package:selene/utils/constants.dart';
 import 'package:selene/utils/theming.dart';
 
 class PaddedAppBar extends ConsumerWidget implements PreferredSizeWidget {

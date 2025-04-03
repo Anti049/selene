@@ -2,35 +2,51 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:selene/common/widgets/action_button.dart';
 import 'package:selene/common/widgets/padded_appbar.dart';
+import 'package:selene/core/providers/data_providers.dart';
+import 'package:selene/domain/entities/tag_entity.dart';
+import 'package:selene/domain/entities/work_entity.dart';
 import 'package:selene/features/banners/widgets/banner_scaffold.dart';
+import 'package:selene/features/library/screens/details/widgets/action_row.dart';
 import 'package:selene/features/library/screens/details/widgets/expandable_text.dart';
-import 'package:selene/features/library/screens/details/widgets/tag_chip.dart';
-import 'package:selene/features/story/models/story.dart';
+import 'package:selene/features/library/screens/details/widgets/tag_section.dart';
 import 'package:selene/router/router.gr.dart';
 import 'package:selene/utils/theming.dart';
 
 @RoutePage()
-class StoryDetailsPage extends ConsumerStatefulWidget {
-  const StoryDetailsPage({super.key, required this.story});
+class WorkDetailsPage extends ConsumerStatefulWidget {
+  const WorkDetailsPage({super.key, required this.work});
 
-  final Story story;
+  final WorkEntity work;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _StoryDetailsPageState();
+      _WorkDetailsPageState();
 }
 
-class _StoryDetailsPageState extends ConsumerState<StoryDetailsPage> {
+class _WorkDetailsPageState extends ConsumerState<WorkDetailsPage> {
   final ScrollController _scrollController = ScrollController();
   final ValueNotifier<bool> _scrolledToTop = ValueNotifier<bool>(true);
   final ValueNotifier<bool> _scrolledToBottom = ValueNotifier<bool>(false);
+  bool _isExpanded = false;
+
+  late WorkEntity _work = widget.work;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+  }
+
+  Future<void> _loadWork() async {
+    final work = await ref.read(workRepositoryProvider).getWorkFromID(_work.id);
+    if (work == null) {
+      // Handle work not found case (e.g., show a message or navigate back)
+      return;
+    }
+    setState(() {
+      _work = work;
+    });
   }
 
   @override
@@ -56,37 +72,61 @@ class _StoryDetailsPageState extends ConsumerState<StoryDetailsPage> {
     }
   }
 
-  bool _isExpanded = false;
-
   void setExpanded(expanded) {
     setState(() {
       _isExpanded = expanded;
     });
   }
 
+  /// Callbacks for action buttons
+  bool isInLibrary = false;
+  bool isInPrediction = false;
+  bool isTracking = false;
+  bool isInWebView = false;
+  void onLibraryTap() {
+    // Handle library action
+    // Temporarily toggle the state
+    setState(() {
+      isInLibrary = !isInLibrary;
+    });
+  }
+
+  void onPredictionTap() {
+    // Handle prediction action
+    // Temporarily toggle the state
+    setState(() {
+      isInPrediction = !isInPrediction;
+    });
+  }
+
+  void onTrackingTap() {
+    // Handle tracking action
+    // Temporarily toggle the state
+    setState(() {
+      isTracking = !isTracking;
+    });
+  }
+
+  void onWebViewTap() {
+    // Handle web view action
+    // Temporarily toggle the state
+    setState(() {
+      isInWebView = !isInWebView;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var tags = [
-      'Tag 1',
-      'Tag 2',
-      'Tag 3',
-      'Tag 4',
-      'Tag 5',
-      'Tag 6',
-      'Tag 7',
-      'Tag 8',
-      'Tag 9',
-      'Tag 10',
-    ];
     double fabHeight = 56.0;
     double fabPadding = 16.0;
-    double bottomNavHeight = MediaQuery.of(context).viewPadding.bottom;
+    double bottomNavHeight = context.mediaQuery.viewPadding.bottom;
+
     return BannerScaffold(
       appBar: PaddedAppBar(
-        title: Text(widget.story.title ?? ''),
+        title: Text(_work.title),
         actions: [
-          IconButton(icon: const Icon(Symbols.share), onPressed: () {}),
-          IconButton(icon: const Icon(Symbols.more), onPressed: () {}),
+          // IconButton(icon: const Icon(Symbols.share), onPressed: () {}),
+          // IconButton(icon: const Icon(Symbols.more), onPressed: () {}),
         ],
       ),
       floatingActionButton: ValueListenableBuilder<bool>(
@@ -97,7 +137,7 @@ class _StoryDetailsPageState extends ConsumerState<StoryDetailsPage> {
             builder: (context, scrolledToBottom, child) {
               return FloatingActionButton.extended(
                 onPressed: () {
-                  context.router.push(ReaderRoute(story: widget.story));
+                  context.router.push(ReaderRoute(work: _work));
                 },
                 label: AnimatedSize(
                   duration: Duration(milliseconds: 200),
@@ -119,76 +159,167 @@ class _StoryDetailsPageState extends ConsumerState<StoryDetailsPage> {
           );
         },
       ),
-      body: Scrollbar(
-        interactive: true,
-        thickness: 8.0,
-        radius: Radius.circular(4.0),
-        controller: _scrollController,
-        child: ListView(
+      body: RefreshIndicator(
+        onRefresh: _loadWork,
+        child: Scrollbar(
+          interactive: true,
+          thickness: 8.0,
+          radius: Radius.circular(4.0),
           controller: _scrollController,
-          padding: EdgeInsets.only(
-            bottom: bottomNavHeight + fabHeight + fabPadding,
-          ),
-          children: [
-            SizedBox(
-              height: 200,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+          child: ListView(
+            controller: _scrollController,
+            padding: EdgeInsets.only(
+              bottom: bottomNavHeight + fabHeight + fabPadding,
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
                 child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  spacing: 16.0,
                   children: [
-                    // TODO: Add image
-                    AspectRatio(
-                      aspectRatio: 1 / 1.6,
-                      child: Container(color: Colors.grey),
+                    // Book Cover
+                    Container(
+                      constraints: BoxConstraints(
+                        minHeight: 200,
+                        maxHeight: 200,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: AspectRatio(
+                        aspectRatio: 1 / 1.6,
+                        child:
+                            _work.coverURL != null
+                                ? Image.network(
+                                  _work.coverURL ?? '',
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (
+                                    context,
+                                    child,
+                                    loadingProgress,
+                                  ) {
+                                    if (loadingProgress == null) {
+                                      return child; // Image is fully loaded
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value:
+                                            loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    (loadingProgress
+                                                            .expectedTotalBytes ??
+                                                        1)
+                                                : null,
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color:
+                                          context.scheme.surfaceContainerHigh,
+                                      child: Icon(
+                                        Symbols.broken_image,
+                                        size: 64.0,
+                                        color: context.scheme.onSurface,
+                                      ),
+                                    );
+                                  },
+                                )
+                                : Material(
+                                  color: context.scheme.surfaceContainerHigh,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Icon(
+                                        Symbols.add_photo_alternate,
+                                        size: 64.0,
+                                        color: context.scheme.onSurface,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                      ),
                     ),
-                    SizedBox(width: 16.0),
                     Expanded(
                       child: Column(
+                        spacing: 4.0,
+                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        spacing: 8.0,
                         children: [
+                          // Book Title
                           Text(
-                            widget.story.title ?? '',
-                            style: Theme.of(context).textTheme.titleLarge,
+                            _work.title,
+                            style: context.text.titleLarge?.copyWith(
+                              color: context.scheme.onSurface,
+                            ),
+                            maxLines: 2,
                           ),
+                          // Book Author
                           Row(
+                            spacing: 8.0,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 6.0,
                             children: [
                               Icon(
                                 Symbols.person,
                                 size: 20,
                                 weight: 600,
-                                color: context.scheme.onSurfaceVariant,
+                                color: context.scheme.onSurface,
                               ),
-                              Text(
-                                widget.story.author ?? '',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.labelLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: context.scheme.onSurfaceVariant,
+                              Flexible(
+                                child: Text(
+                                  _work.authorNames,
+                                  style: context.text.labelLarge?.copyWith(
+                                    color: context.scheme.onSurface,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
+                          const Divider(),
+                          // Book Published Date
                           Row(
+                            spacing: 8.0,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 6.0,
                             children: [
                               Icon(
-                                Symbols.done_all,
+                                Symbols.publish,
                                 size: 20,
                                 weight: 600,
                                 color: context.scheme.onSurfaceVariant,
                               ),
-                              Text(
-                                'Completed • ${widget.story.title ?? ''}',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.labelLarge?.copyWith(
-                                  color: context.scheme.onSurfaceVariant,
+                              Flexible(
+                                child: Text(
+                                  'Published • 01/19/1994',
+                                  style: context.text.labelMedium?.copyWith(
+                                    color: context.scheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          // Book Updated/Completed Date
+                          Row(
+                            spacing: 8.0,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Symbols.update,
+                                size: 20,
+                                weight: 600,
+                                color: context.scheme.onSurfaceVariant,
+                              ),
+                              Flexible(
+                                child: Text(
+                                  '${_work.status == WorkStatus.completed ? 'Completed' : 'Updated'} • 01/19/1994',
+                                  style: context.text.labelMedium?.copyWith(
+                                    color: context.scheme.onSurfaceVariant,
+                                  ),
                                 ),
                               ),
                             ],
@@ -199,120 +330,75 @@ class _StoryDetailsPageState extends ConsumerState<StoryDetailsPage> {
                   ],
                 ),
               ),
-            ),
-            // Row of icon buttons with labels
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-              child: Row(
-                spacing: 4.0,
-                children: [
-                  Expanded(
-                    child: ActionButton(
-                      text: 'In Library',
-                      icon: Symbols.favorite,
-                      filled: true,
-                      color: context.scheme.primary,
-                      onPressed: () {},
-                    ),
-                  ),
-                  Expanded(
-                    child: ActionButton(
-                      text: '26 days',
-                      icon: Symbols.hourglass,
-                      color: context.scheme.onSurfaceVariant.withValues(
-                        alpha: 0.5,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ),
-                  Expanded(
-                    child: ActionButton(
-                      text: 'Tracking',
-                      icon: Symbols.sync,
-                      color: context.scheme.onSurfaceVariant.withValues(
-                        alpha: 0.5,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ),
-                  Expanded(
-                    child: ActionButton(
-                      text: 'WebView',
-                      icon: Symbols.public,
-                      color: context.scheme.onSurfaceVariant.withValues(
-                        alpha: 0.5,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ),
-                ],
+              // Row of icon buttons with labels
+              DetailsActionRow(
+                onLibraryTap: onLibraryTap,
+                isInLibrary: isInLibrary,
+                onPredictionTap: onPredictionTap,
+                isInPrediction: isInPrediction,
+                onTrackingTap: onTrackingTap,
+                isTracking: isTracking,
+                onWebViewTap: onWebViewTap,
+                isInWebView: isInWebView,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ExpandableText(
-                text: widget.story.description ?? '',
-                maxLines: 3,
-                onExpanded: setExpanded,
-              ),
-            ),
-            // Wrap-around list of tags
-            if (!_isExpanded)
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    spacing: 4.0,
-                    children: [
-                      for (final tag in tags) TagChip(text: tag, onTap: () {}),
-                    ],
-                  ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+                child: ExpandableText(
+                  text: _work.description ?? '',
+                  maxLines: 3,
+                  onExpanded: setExpanded,
                 ),
               ),
-            if (_isExpanded)
+              // Fandom Tags
+              DetailsTagSection(
+                isExpanded: _isExpanded,
+                tags: _work.getTagsByType(TagType.fandom),
+              ),
+              // Character Tags
+              DetailsTagSection(
+                isExpanded: _isExpanded,
+                tags: _work.getTagsByType(TagType.character),
+              ),
+              // Relationship Tags
+              DetailsTagSection(
+                isExpanded: _isExpanded,
+                tags: _work.getTagsByType(TagType.relationship),
+              ),
+              // Freeform Tags
+              DetailsTagSection(
+                isExpanded: _isExpanded,
+                tags: _work.getTagsByType(TagType.freeform),
+              ),
               SizedBox(
                 width: double.infinity,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Wrap(
-                    spacing: 4.0,
-                    runSpacing: 4.0,
-                    children: [
-                      for (final tag in tags) TagChip(text: tag, onTap: () {}),
-                    ],
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  child: Text(
+                    '${_work.wordCount} Chapters',
+                    style: context.text.titleMedium,
                   ),
                 ),
               ),
-            SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                child: Text(
-                  '${widget.story.chapterCount} Chapters',
-                  style: context.text.titleMedium,
-                ),
+              Column(
+                children: [
+                  for (var i = 1; i <= (_work.wordCount ?? 0); i++)
+                    ListTile(
+                      title: Text('Chapter $i'),
+                      subtitle: Text('Chapter $i subtitle'),
+                      trailing: Icon(Symbols.chevron_right),
+                      onTap: () {
+                        context.router.push(
+                          ReaderRoute(work: _work, chapter: i),
+                        );
+                      },
+                    ),
+                ],
               ),
-            ),
-            Column(
-              children: [
-                for (var i = 1; i <= widget.story.chapterCount!; i++)
-                  ListTile(
-                    title: Text('Chapter $i'),
-                    subtitle: Text('Chapter $i subtitle'),
-                    trailing: Icon(Symbols.chevron_right),
-                    onTap: () {
-                      context.router.push(
-                        ReaderRoute(story: widget.story, chapter: i),
-                      );
-                    },
-                  ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.endContained,

@@ -22,7 +22,7 @@ class BannerContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final statusBarHeight = MediaQuery.of(context).viewPadding.top;
+    final statusBarHeight = context.mediaQuery.viewPadding.top;
     final fullscreen = ref.watch(fullscreenProvider);
     final downloadedOnly =
         ref.watch(morePreferencesProvider).downloadedOnly.get();

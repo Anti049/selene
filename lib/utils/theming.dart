@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:isar/isar.dart';
+import 'package:selene/features/settings/screens/appearance/themes/models/custom_colors.dart';
 import 'package:selene/utils/isar.dart';
+
+// Custom colors
+extension CustomColorExtension on ThemeData {
+  CustomColors get extended => extension<CustomColors>()!;
+}
 
 // Theme data extensions
 extension ThemeDataExtensions on BuildContext {
   ThemeData get theme => Theme.of(this);
+  CustomColors get extended => theme.extended;
   ColorScheme get scheme => theme.colorScheme;
   TextTheme get text => theme.textTheme;
+  MediaQueryData get mediaQuery => MediaQuery.of(this);
+  Brightness get brightness => theme.brightness;
 }
 
 extension ColorExtension on String {
@@ -19,7 +28,7 @@ extension ColorExtension on String {
 Brightness calculateBrightness(BuildContext context, ThemeMode themeMode) {
   // If theme mode is System, return system brightness
   if (themeMode == ThemeMode.system) {
-    return MediaQuery.of(context).platformBrightness;
+    return context.mediaQuery.platformBrightness;
   }
   // If theme mode is Light, return light brightness
   // If theme mode is Dark, return dark brightness

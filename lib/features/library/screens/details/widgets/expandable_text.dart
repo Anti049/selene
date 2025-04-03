@@ -8,15 +8,15 @@ class ExpandableText extends StatefulWidget {
   final void Function(bool)? onExpanded;
 
   const ExpandableText({
-    Key? key,
+    super.key,
     required this.text,
     this.maxLines = 3,
     this.style,
     this.onExpanded,
-  }) : super(key: key);
+  });
 
   @override
-  _ExpandableTextState createState() => _ExpandableTextState();
+  State<ExpandableText> createState() => _ExpandableTextState();
 }
 
 class _ExpandableTextState extends State<ExpandableText>
@@ -26,6 +26,8 @@ class _ExpandableTextState extends State<ExpandableText>
   late Animation<double> _heightAnimation;
   double _textHeight = 0.0;
   double _collapsedHeight = 0.0;
+  bool _requiresTruncation = false;
+  bool _parentExpanded = false;
 
   @override
   void initState() {
@@ -50,19 +52,23 @@ class _ExpandableTextState extends State<ExpandableText>
     final textPainter = TextPainter(
       text: TextSpan(text: widget.text, style: style),
       textDirection: TextDirection.ltr,
-    )..layout(maxWidth: MediaQuery.of(context).size.width);
+    )..layout(maxWidth: context.mediaQuery.size.width);
 
-    _textHeight = textPainter.height;
+    _textHeight = textPainter.height + 1.0;
 
     final collapsedTextPainter = TextPainter(
       text: TextSpan(text: widget.text, style: style),
       maxLines: widget.maxLines,
       textDirection: TextDirection.ltr,
-    )..layout(maxWidth: MediaQuery.of(context).size.width);
+    )..layout(maxWidth: context.mediaQuery.size.width);
 
     _collapsedHeight = collapsedTextPainter.height;
-    // Round down to the nearest pixel to prevent overflow
-    _collapsedHeight = _collapsedHeight.ceilToDouble();
+    _collapsedHeight = _collapsedHeight.floorToDouble();
+
+    _requiresTruncation =
+        _textHeight >
+        _collapsedHeight +
+            1.0; // Ensure there's a difference to show the expand/collapse
 
     _heightAnimation = Tween<double>(
       begin: _collapsedHeight,
@@ -70,6 +76,10 @@ class _ExpandableTextState extends State<ExpandableText>
     ).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
+
+    if (!_requiresTruncation) {
+      _isExpanded = true; // Automatically expand if no truncation is needed
+    }
   }
 
   @override
@@ -79,15 +89,22 @@ class _ExpandableTextState extends State<ExpandableText>
   }
 
   void _toggleExpanded() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-      if (_isExpanded) {
-        _animationController.forward();
-      } else {
-        _animationController.reverse();
-      }
-    });
-    widget.onExpanded?.call(_isExpanded);
+    if (_requiresTruncation) {
+      setState(() {
+        _isExpanded = !_isExpanded;
+        _parentExpanded = _isExpanded;
+        if (_isExpanded) {
+          _animationController.forward();
+        } else {
+          _animationController.reverse();
+        }
+      });
+    } else {
+      setState(() {
+        _parentExpanded = !_parentExpanded;
+      });
+    }
+    widget.onExpanded?.call(_parentExpanded);
   }
 
   @override
@@ -110,37 +127,48 @@ class _ExpandableTextState extends State<ExpandableText>
                             child: Align(
                               alignment: Alignment.topLeft,
                               heightFactor:
-                                  _heightAnimation.value / _textHeight,
+                                  _requiresTruncation
+                                      ? _heightAnimation.value / _textHeight
+                                      : 1.0,
                               child: Text(widget.text, style: widget.style),
                             ),
                           ),
-                          AnimatedSize(
-                            duration: Duration(milliseconds: 200),
-                            curve: Curves.easeInOut,
-                            child: Container(height: _isExpanded ? 24.0 : 0.0),
-                          ),
+                          if (_requiresTruncation)
+                            AnimatedSize(
+                              duration: Duration(milliseconds: 200),
+                              curve: Curves.easeInOut,
+                              child: Container(
+                                height: _isExpanded ? 24.0 : 0.0,
+                              ),
+                            ),
+                          if (!_requiresTruncation)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 32.0),
+                              child: SizedBox.shrink(),
+                            ),
                         ],
                       ),
-                      Positioned.fill(
-                        child: AnimatedOpacity(
-                          duration: Duration(milliseconds: 200),
-                          opacity: _isExpanded ? 0.0 : 1.0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  context.theme.scaffoldBackgroundColor
-                                      .withAlpha(0),
-                                  context.theme.scaffoldBackgroundColor,
-                                ],
-                                stops: [0.5, 1.0],
+                      if (_requiresTruncation)
+                        Positioned.fill(
+                          child: AnimatedOpacity(
+                            duration: Duration(milliseconds: 200),
+                            opacity: _isExpanded ? 0.0 : 1.0,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    context.theme.scaffoldBackgroundColor
+                                        .withAlpha(0),
+                                    context.theme.scaffoldBackgroundColor,
+                                  ],
+                                  stops: [0.5, 1.0],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   );
                 },
@@ -153,12 +181,14 @@ class _ExpandableTextState extends State<ExpandableText>
           left: 0,
           right: 0,
           child: Center(
-            child: GestureDetector(
-              onTap: _toggleExpanded,
-              child: Icon(
-                _isExpanded ? Icons.expand_less : Icons.expand_more,
-                color: context.theme.iconTheme.color,
+            child: IconButton(
+              visualDensity: VisualDensity(horizontal: -4.0, vertical: -4.0),
+              icon: Icon(
+                _isExpanded && _parentExpanded
+                    ? Icons.expand_less
+                    : Icons.expand_more,
               ),
+              onPressed: _toggleExpanded,
             ),
           ),
         ),

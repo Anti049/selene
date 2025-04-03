@@ -41,7 +41,7 @@ class _ReorderDialogState extends ConsumerState<ReorderDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final systemNavigationHeight = MediaQuery.of(context).viewPadding.bottom;
+    final systemNavigationHeight = context.mediaQuery.viewPadding.bottom;
 
     return Dialog(
       insetPadding: EdgeInsets.fromLTRB(
@@ -81,7 +81,7 @@ class _ReorderDialogState extends ConsumerState<ReorderDialog> {
           ),
           Container(
             constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.5,
+              maxHeight: context.mediaQuery.size.height * 0.5,
             ),
             child: ReorderableListView(
               shrinkWrap: true,

@@ -24,7 +24,7 @@ class SettingSheet extends ConsumerWidget {
       onClosing: () {},
       enableDrag: false,
       backgroundColor: context.scheme.surfaceContainer,
-      constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+      constraints: BoxConstraints(minWidth: context.mediaQuery.size.width),
       builder: (context) {
         int columnCount = 2;
         int rowCount = (options.length / columnCount).ceil();
@@ -107,7 +107,7 @@ class SettingSheet extends ConsumerWidget {
                 ],
               ),
               // System Navigation Bar padding
-              SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
+              SizedBox(height: context.mediaQuery.viewPadding.bottom),
             ],
           ),
         );

@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:selene/domain/entities/author_entity.dart';
+import 'package:selene/domain/entities/work_entity.dart';
 import 'package:selene/features/book/models/book.dart';
 import 'package:selene/features/book/repositories/book_repository.dart';
-import 'package:selene/features/story/models/author.dart';
-import 'package:selene/features/story/models/story.dart';
 import 'package:xml/xml.dart';
 
 part 'epub_book_repository.g.dart';
@@ -42,7 +42,7 @@ class EpubBookRepository implements IBookRepository {
     // - Author
     final authors =
         contentXML.findAllElements('dc:creator').map((node) {
-          return Author(name: node.innerText, url: '');
+          return AuthorEntity(name: node.innerText, url: '');
         }).toList();
     // - Description (optional)
     String description = '';
@@ -54,13 +54,13 @@ class EpubBookRepository implements IBookRepository {
     }
 
     // Create story
-    final story = Story(
+    final work = WorkEntity(
       title: title,
       url: '',
-      // authors: authors,
-      // description: description,
+      authors: authors,
+      description: description,
     );
-    book.story = story;
+    book.work = work;
 
     return book;
   }

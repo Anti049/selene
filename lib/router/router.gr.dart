@@ -10,6 +10,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i23;
 import 'package:flutter/material.dart' as _i24;
+import 'package:selene/domain/entities/work_entity.dart' as _i25;
 import 'package:selene/features/browse/browse_tab.dart' as _i4;
 import 'package:selene/features/browse/screens/extensions/extensions_tab.dart'
     as _i6;
@@ -20,7 +21,7 @@ import 'package:selene/features/browse/screens/sources/sources_tab.dart'
 import 'package:selene/features/history/history_tab.dart' as _i8;
 import 'package:selene/features/library/library_tab.dart' as _i11;
 import 'package:selene/features/library/screens/details/details_page.dart'
-    as _i19;
+    as _i22;
 import 'package:selene/features/library/screens/options/display/display_tab.dart'
     as _i5;
 import 'package:selene/features/library/screens/options/filters/filters_tab.dart'
@@ -30,7 +31,7 @@ import 'package:selene/features/library/screens/options/library_options_page.dar
 import 'package:selene/features/library/screens/options/sort/sort_tab.dart'
     as _i17;
 import 'package:selene/features/library/screens/options/tags/tags_tab.dart'
-    as _i20;
+    as _i19;
 import 'package:selene/features/main/main_screen.dart' as _i12;
 import 'package:selene/features/more/more_tab.dart' as _i14;
 import 'package:selene/features/reader/reader_page.dart' as _i15;
@@ -40,12 +41,11 @@ import 'package:selene/features/settings/screens/advanced/advanced_page.dart'
 import 'package:selene/features/settings/screens/appearance/appearance_page.dart'
     as _i3;
 import 'package:selene/features/settings/screens/appearance/themes/theme_selection_page.dart'
-    as _i21;
+    as _i20;
 import 'package:selene/features/settings/screens/library/library_page.dart'
     as _i10;
 import 'package:selene/features/settings/settings_page.dart' as _i16;
-import 'package:selene/features/story/models/story.dart' as _i25;
-import 'package:selene/features/updates/updates_tab.dart' as _i22;
+import 'package:selene/features/updates/updates_tab.dart' as _i21;
 
 /// generated route for
 /// [_i1.AboutSettingsPage]
@@ -318,14 +318,14 @@ class MoreRoute extends _i23.PageRouteInfo<void> {
 class ReaderRoute extends _i23.PageRouteInfo<ReaderRouteArgs> {
   ReaderRoute({
     _i24.Key? key,
-    required _i25.Story story,
+    required _i25.WorkEntity work,
     int? chapter,
     List<_i23.PageRouteInfo>? children,
   }) : super(
           ReaderRoute.name,
           args: ReaderRouteArgs(
             key: key,
-            story: story,
+            work: work,
             chapter: chapter,
           ),
           initialChildren: children,
@@ -339,7 +339,7 @@ class ReaderRoute extends _i23.PageRouteInfo<ReaderRouteArgs> {
       final args = data.argsAs<ReaderRouteArgs>();
       return _i15.ReaderPage(
         key: args.key,
-        story: args.story,
+        work: args.work,
         chapter: args.chapter,
       );
     },
@@ -349,19 +349,19 @@ class ReaderRoute extends _i23.PageRouteInfo<ReaderRouteArgs> {
 class ReaderRouteArgs {
   const ReaderRouteArgs({
     this.key,
-    required this.story,
+    required this.work,
     this.chapter,
   });
 
   final _i24.Key? key;
 
-  final _i25.Story story;
+  final _i25.WorkEntity work;
 
   final int? chapter;
 
   @override
   String toString() {
-    return 'ReaderRouteArgs{key: $key, story: $story, chapter: $chapter}';
+    return 'ReaderRouteArgs{key: $key, work: $work, chapter: $chapter}';
   }
 }
 
@@ -423,53 +423,7 @@ class SourcesRoute extends _i23.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i19.StoryDetailsPage]
-class StoryDetailsRoute extends _i23.PageRouteInfo<StoryDetailsRouteArgs> {
-  StoryDetailsRoute({
-    _i24.Key? key,
-    required _i25.Story story,
-    List<_i23.PageRouteInfo>? children,
-  }) : super(
-          StoryDetailsRoute.name,
-          args: StoryDetailsRouteArgs(
-            key: key,
-            story: story,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'StoryDetailsRoute';
-
-  static _i23.PageInfo page = _i23.PageInfo(
-    name,
-    builder: (data) {
-      final args = data.argsAs<StoryDetailsRouteArgs>();
-      return _i19.StoryDetailsPage(
-        key: args.key,
-        story: args.story,
-      );
-    },
-  );
-}
-
-class StoryDetailsRouteArgs {
-  const StoryDetailsRouteArgs({
-    this.key,
-    required this.story,
-  });
-
-  final _i24.Key? key;
-
-  final _i25.Story story;
-
-  @override
-  String toString() {
-    return 'StoryDetailsRouteArgs{key: $key, story: $story}';
-  }
-}
-
-/// generated route for
-/// [_i20.TagsTab]
+/// [_i19.TagsTab]
 class TagsRoute extends _i23.PageRouteInfo<void> {
   const TagsRoute({List<_i23.PageRouteInfo>? children})
       : super(
@@ -482,13 +436,13 @@ class TagsRoute extends _i23.PageRouteInfo<void> {
   static _i23.PageInfo page = _i23.PageInfo(
     name,
     builder: (data) {
-      return const _i20.TagsTab();
+      return const _i19.TagsTab();
     },
   );
 }
 
 /// generated route for
-/// [_i21.ThemeSelectionScreen]
+/// [_i20.ThemeSelectionScreen]
 class ThemeSelectionRoute extends _i23.PageRouteInfo<void> {
   const ThemeSelectionRoute({List<_i23.PageRouteInfo>? children})
       : super(
@@ -501,13 +455,13 @@ class ThemeSelectionRoute extends _i23.PageRouteInfo<void> {
   static _i23.PageInfo page = _i23.PageInfo(
     name,
     builder: (data) {
-      return const _i21.ThemeSelectionScreen();
+      return const _i20.ThemeSelectionScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i22.UpdatesTab]
+/// [_i21.UpdatesTab]
 class UpdatesRoute extends _i23.PageRouteInfo<void> {
   const UpdatesRoute({List<_i23.PageRouteInfo>? children})
       : super(
@@ -520,7 +474,53 @@ class UpdatesRoute extends _i23.PageRouteInfo<void> {
   static _i23.PageInfo page = _i23.PageInfo(
     name,
     builder: (data) {
-      return const _i22.UpdatesTab();
+      return const _i21.UpdatesTab();
     },
   );
+}
+
+/// generated route for
+/// [_i22.WorkDetailsPage]
+class WorkDetailsRoute extends _i23.PageRouteInfo<WorkDetailsRouteArgs> {
+  WorkDetailsRoute({
+    _i24.Key? key,
+    required _i25.WorkEntity work,
+    List<_i23.PageRouteInfo>? children,
+  }) : super(
+          WorkDetailsRoute.name,
+          args: WorkDetailsRouteArgs(
+            key: key,
+            work: work,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'WorkDetailsRoute';
+
+  static _i23.PageInfo page = _i23.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<WorkDetailsRouteArgs>();
+      return _i22.WorkDetailsPage(
+        key: args.key,
+        work: args.work,
+      );
+    },
+  );
+}
+
+class WorkDetailsRouteArgs {
+  const WorkDetailsRouteArgs({
+    this.key,
+    required this.work,
+  });
+
+  final _i24.Key? key;
+
+  final _i25.WorkEntity work;
+
+  @override
+  String toString() {
+    return 'WorkDetailsRouteArgs{key: $key, work: $work}';
+  }
 }

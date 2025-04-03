@@ -1,12 +1,11 @@
 import 'dart:io';
-
-import 'package:selene/features/story/models/story.dart';
+import 'package:selene/domain/entities/work_entity.dart';
 
 class Book {
   final File file;
-  Story? story;
+  WorkEntity? work;
 
-  Book({required this.file, this.story});
+  Book({required this.file, this.work});
 
   String get extension => file.path.split('.').last;
 }

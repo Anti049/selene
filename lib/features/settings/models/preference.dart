@@ -1,16 +1,31 @@
-import 'package:hive_ce_flutter/hive_flutter.dart';
+// lib/features/settings/models/preference.dart
+import 'package:selene/common/services/preferences_service.dart'; // Import the service
 
 sealed class Preference<T> {
   final String _key;
-  final Box _preferences;
+  final PreferencesService _preferencesService; // Use PreferencesService
   final T _defaultValue;
+  // final Ref<dynamic> _ref;
 
-  Preference(this._key, this._preferences, this._defaultValue);
+  Preference(
+    this._key,
+    this._preferencesService,
+    this._defaultValue,
+    // this._ref,
+  );
 
   // Read/write
-  T read(String key, T defaultValue) =>
-      _preferences.get(key, defaultValue: defaultValue);
-  void write(String key, T value) => _preferences.put(key, value);
+  T read(String key, T defaultValue) {
+    // Use the service to get data
+    return _preferencesService.getData<T>(key, defaultValue: defaultValue) ??
+        defaultValue;
+  }
+
+  void write(String key, T value) {
+    // Use the service to save data (no async needed here)
+    _preferencesService.saveData<T>(key, value);
+    // _ref.notifyListeners();
+  }
 
   // Get/set
   T get() {
@@ -31,8 +46,8 @@ sealed class Preference<T> {
   }
 
   // Delete
-  void delete() async {
-    _preferences.delete(_key);
+  void delete() {
+    _preferencesService.deleteData(_key);
   }
 
   // Default value
@@ -64,38 +79,41 @@ extension PreferenceEnum<T> on Preference<T> {
 
 // Extended classes
 class BoolPreference extends Preference<bool> {
-  BoolPreference(super.key, super.preferences, super.defaultValue);
+  BoolPreference(super.key, super.preferencesService, super.defaultValue);
 }
 
 class IntPreference extends Preference<int> {
-  IntPreference(super.key, super.preferences, super.defaultValue);
+  IntPreference(super.key, super.preferencesService, super.defaultValue);
 }
 
 class DoublePreference extends Preference<double> {
-  DoublePreference(super.key, super.preferences, super.defaultValue);
+  DoublePreference(super.key, super.preferencesService, super.defaultValue);
 }
 
 class StringPreference extends Preference<String> {
-  StringPreference(super.key, super.preferences, super.defaultValue);
+  StringPreference(super.key, super.preferencesService, super.defaultValue);
 }
 
 class StringSetPreference extends Preference<Set<String>> {
-  StringSetPreference(super.key, super.preferences, super.defaultValue);
+  StringSetPreference(super.key, super.preferencesService, super.defaultValue);
 
   @override
   Set<String> read(String key, Set<String> defaultValue) =>
-      _preferences.get(key, defaultValue: defaultValue.toList()).toSet();
+      _preferencesService.getStringSet(key, defaultValue: defaultValue);
 
   @override
-  void write(String key, Set<String> value) =>
-      _preferences.put(key, value.toList());
+  void write(String key, Set<String> value) {
+    _preferencesService.setStringSet(key, value);
+    // _ref.notifyListeners();
+  }
 }
 
 class ObjectPreference<T> extends Preference<T> {
   ObjectPreference(
     super.key,
-    super.preferences,
+    super.preferencesService,
     super.defaultValue,
+
     this.serializer,
     this.deserializer,
   );
@@ -105,7 +123,7 @@ class ObjectPreference<T> extends Preference<T> {
 
   @override
   T read(String key, T defaultValue) {
-    final value = _preferences.get(key, defaultValue: defaultValue);
+    final value = _preferencesService.getData(key, defaultValue: defaultValue);
     return value == null
         ? defaultValue
         : deserializer(value is String ? value : value.toString());
@@ -113,35 +131,39 @@ class ObjectPreference<T> extends Preference<T> {
 
   @override
   void write(String key, T value) {
-    _preferences.put(key, serializer(value));
+    _preferencesService.saveData(key, serializer(value));
+    // _ref.notifyListeners();
   }
 }
 
 class EnumPreference<Enum> extends Preference<Enum> {
-  EnumPreference(super.key, super.preferences, super.defaultValue, this.values);
+  EnumPreference(
+    super.key,
+    super.preferencesService,
+    super.defaultValue,
+
+    this.values,
+  );
 
   final Iterable<Enum> values;
 
   @override
-  Enum read(String key, Enum defaultValue) {
-    final value = _preferences.get(key, defaultValue: defaultValue.toString());
-    return values.firstWhere(
-      (e) => e.toString() == value,
-      orElse: () => defaultValue,
-    );
-  }
+  Enum read(String key, Enum defaultValue) =>
+      _preferencesService.getEnum(key, defaultValue, values);
 
   @override
   void write(String key, Enum value) {
-    _preferences.put(key, value.toString());
+    _preferencesService.setEnum(key, value);
+    // _ref.notifyListeners();
   }
 }
 
 class EnumListPreference<Enum> extends Preference<List<Enum>> {
   EnumListPreference(
     super.key,
-    super.preferences,
+    super.preferencesService,
     super.defaultValue,
+
     this.values,
   );
 
@@ -149,23 +171,25 @@ class EnumListPreference<Enum> extends Preference<List<Enum>> {
 
   @override
   List<Enum> read(String key, List<Enum> defaultValue) {
-    final storedList = _preferences.get(
-      key,
-      defaultValue: defaultValue.map((e) => e.toString()).toList(),
-    );
-    return storedList
-        .map(
-          (value) => values.firstWhere(
-            (e) => e.toString() == value,
-            orElse: () => defaultValue.first,
-          ),
-        )
-        .whereType<Enum>()
-        .toList();
+    return _preferencesService.getEnumList(key, defaultValue, values);
+    // final storedList = _preferencesService.getData<List<String>>(
+    //   key,
+    //   defaultValue: defaultValue.map((e) => e.toString()).toList(),
+    // );
+    // return storedList
+    //     .map(
+    //       (value) => values.firstWhere(
+    //         (e) => e.toString() == value,
+    //         orElse: () => defaultValue.first,
+    //       ),
+    //     )
+    //     .whereType<Enum>()
+    //     .toList();
   }
 
   @override
   void write(String key, List<Enum> value) {
-    _preferences.put(key, value.map((e) => e.toString()).toList());
+    _preferencesService.setEnumList(key, value);
+    // _ref.notifyListeners();
   }
 }

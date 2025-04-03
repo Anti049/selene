@@ -7,17 +7,30 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:selene/core/constants/layout_constants.dart';
+import 'package:selene/data/models/author.dart';
+import 'package:selene/data/models/tag.dart';
+import 'package:selene/data/models/work.dart';
 import 'package:selene/features/banners/widgets/banner_frame.dart';
 import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
-import 'package:selene/features/settings/screens/appearance/themes/data/themes.dart';
+import 'package:selene/core/themes/themes.dart';
+import 'package:selene/features/settings/screens/appearance/themes/models/custom_colors.dart';
 import 'package:selene/features/settings/screens/appearance/themes/models/theme.dart';
 import 'package:selene/router/router.dart' show SeleneRouter;
 import 'package:selene/utils/isar.dart';
-import 'package:selene/utils/responsive_layout.dart';
 import 'package:selene/utils/theming.dart';
 import 'package:system_theme/system_theme.dart';
+// import 'package:drift/native.dart';
+// import 'package:path/path.dart' as p;
 
 late Isar isarInstance;
+
+// Future<AppDatabase> _initDatabase() async {
+//   final documentsDirectory = await getApplicationDocumentsDirectory();
+//   final dbPath = p.join(documentsDirectory.path, 'app.db');
+//   final database = AppDatabase(NativeDatabase(File(dbPath)));
+//   return database;
+// }
 
 void main() async {
   // Ensure plugin services are initialized
@@ -29,8 +42,16 @@ void main() async {
 
   // Initialize Isar (for database)
   final dir = await getApplicationDocumentsDirectory();
-  isarInstance = await Isar.open([SeleneThemeSchema], directory: dir.path);
+  isarInstance = await Isar.open([
+    SeleneThemeSchema,
+    WorkSchema,
+    AuthorSchema,
+    TagSchema,
+  ], directory: dir.path);
   // isarInstance = await StorageProvider().initDB(null, inspector: kDebugMode);
+
+  // Initialize Drift
+  // final database = await _initDatabase();
 
   // Load accent color (so it can't be wrong on first run)
   await SystemTheme.accentColor.load();
@@ -57,6 +78,25 @@ class MainApp extends ConsumerWidget {
           category: ThemeCategory.system,
           primary: accent.accent.hex,
         );
+
+        // Custom colors
+        CustomColors extendedLightColors = const CustomColors(
+          info: Color(0xFF036A96),
+          success: Color(0xFF14710A),
+          warning: Color(0xFFA34D14),
+          alert: Color(0xFF846E15),
+          character: Color(0xFF644AC9),
+          romance: Color(0xFFA3144D),
+        );
+        CustomColors extendedDarkColors = const CustomColors(
+          info: Color(0xFF80FFEA),
+          success: Color(0xFF8AFF80),
+          warning: Color(0xFFFFCA80),
+          alert: Color(0xFFFFFF80),
+          character: Color(0xFF9580FF),
+          romance: Color(0xFFFF80BF),
+        );
+
         /*final dynamicID = */
         isarInstance.writeTxnSync(() {
           return isarInstance.seleneThemes.putSync(dynamicTheme);
@@ -109,12 +149,14 @@ class MainApp extends ConsumerWidget {
             contrastLevel: contrastLevel,
             blendLevel: blendLevel,
             einkMode: einkMode,
+            customColors: extendedLightColors,
           ),
           darkTheme: selectedTheme?.dark(
             contrastLevel: contrastLevel,
             blendLevel: blendLevel,
             usePureBlack: usePureBlack,
             einkMode: einkMode,
+            customColors: extendedDarkColors,
           ),
           debugShowCheckedModeBanner: false,
           title: 'Selene',
@@ -122,14 +164,14 @@ class MainApp extends ConsumerWidget {
             return ResponsiveBreakpoints.builder(
               child: BannerFrame(child: child!),
               breakpoints: [
-                const Breakpoint(start: 0, end: 600, name: COMPACT),
-                const Breakpoint(start: 600, end: 839, name: MEDIUM),
-                const Breakpoint(start: 840, end: 1199, name: EXPANDED),
-                const Breakpoint(start: 1200, end: 1599, name: LARGE),
+                const Breakpoint(start: 0, end: 600, name: kCompact),
+                const Breakpoint(start: 600, end: 839, name: kMedium),
+                const Breakpoint(start: 840, end: 1199, name: kExpanded),
+                const Breakpoint(start: 1200, end: 1599, name: kLarge),
                 const Breakpoint(
                   start: 1600,
                   end: double.infinity,
-                  name: EXTRA_LARGE,
+                  name: kExtraLarge,
                 ),
               ],
             );

@@ -21,7 +21,7 @@ class BannerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Banner variables
-    final statusBarHeight = MediaQuery.of(context).viewPadding.top;
+    final statusBarHeight = context.mediaQuery.viewPadding.top;
     final bannerHeight = 32.0 + (isTopmost ? statusBarHeight : 0.0);
     // Banner widget
     return ClipRect(

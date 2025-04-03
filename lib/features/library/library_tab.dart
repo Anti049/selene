@@ -6,14 +6,18 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/common/widgets/empty.dart';
 import 'package:selene/common/widgets/padded_appbar.dart';
 import 'package:selene/common/widgets/refresh.dart';
+import 'package:selene/core/constants/animation_constants.dart';
+import 'package:selene/core/providers/data_providers.dart';
+import 'package:selene/domain/entities/author_entity.dart';
+import 'package:selene/domain/entities/tag_entity.dart';
+import 'package:selene/domain/entities/work_entity.dart';
 import 'package:selene/features/banners/widgets/banner_scaffold.dart';
 import 'package:selene/features/library/providers/library_preferences.dart';
 import 'package:selene/features/library/providers/library_state.dart';
+import 'package:selene/features/library/widgets/add_work_dialog.dart';
+import 'package:selene/features/library/widgets/library_item/library_item_component.dart';
 import 'package:selene/features/library/widgets/library_item/library_list_item.dart';
-import 'package:selene/features/settings/models/preference.dart';
-import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
 import 'package:selene/router/router.gr.dart';
-import 'package:selene/utils/constants.dart';
 import 'package:selene/utils/enums.dart';
 import 'package:selene/utils/theming.dart';
 
@@ -176,6 +180,7 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
     final libraryState = ref.watch(libraryStateProvider);
     final libraryNotifier = ref.read(libraryStateProvider.notifier);
     final libraryPreferences = ref.watch(libraryPreferencesProvider);
+    final workRepository = ref.read(workRepositoryProvider);
 
     return PopScope(
       canPop:
@@ -235,10 +240,13 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
 
             bool isList =
                 libraryPreferences.displayMode.get() == DisplayMode.list;
+            bool isComponentList =
+                libraryPreferences.displayMode.get() ==
+                DisplayMode.componentList;
 
-            if (isList) {
-              return RefreshIndicator(
-                key: _refreshKey,
+            if (isList || isComponentList) {
+              return SmartRefreshIndicator(
+                refreshKey: _refreshKey,
                 onRefresh: _onRefresh,
                 child: Scrollbar(
                   controller: _scrollController,
@@ -250,26 +258,60 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
                     shrinkWrap: true,
                     children: [
                       for (final item in libraryModel.libraryItems)
-                        LibraryListItem(
-                          story: item.story,
-                          selected: libraryModel.isSelected(item),
-                          onTap: () {
-                            if (libraryModel.selecting) {
+                        if (isList)
+                          LibraryListItem(
+                            work: item.work,
+                            selected: libraryModel.isSelected(item),
+                            onTap: () {
+                              if (libraryModel.selecting) {
+                                libraryNotifier.toggleSelection(item);
+                                return;
+                              }
+                              context.router.push(
+                                WorkDetailsRoute(work: item.work),
+                              );
+                            },
+                            onLongPress: () {
+                              if (libraryModel.selecting) {
+                                libraryNotifier.toggleRangeSelection(item);
+                                return;
+                              }
                               libraryNotifier.toggleSelection(item);
-                              return;
-                            }
-                            context.router.push(
-                              StoryDetailsRoute(story: item.story),
-                            );
-                          },
-                          onLongPress: () {
-                            if (libraryModel.selecting) {
-                              libraryNotifier.toggleRangeSelection(item);
-                              return;
-                            }
-                            libraryNotifier.toggleSelection(item);
-                          },
-                        ),
+                            },
+                            onSwipeRight: (context) {
+                              libraryNotifier.toggleSelection(item);
+                            },
+                            onSwipeLeft: (context) {
+                              libraryNotifier.toggleSelection(item);
+                            },
+                          )
+                        else
+                          LibraryItemComponent(
+                            work: item.work,
+                            selected: libraryModel.isSelected(item),
+                            onTap: () {
+                              if (libraryModel.selecting) {
+                                libraryNotifier.toggleSelection(item);
+                                return;
+                              }
+                              context.router.push(
+                                WorkDetailsRoute(work: item.work),
+                              );
+                            },
+                            onLongPress: () {
+                              if (libraryModel.selecting) {
+                                libraryNotifier.toggleRangeSelection(item);
+                                return;
+                              }
+                              libraryNotifier.toggleSelection(item);
+                            },
+                            onSwipeRight: (context) {
+                              libraryNotifier.toggleSelection(item);
+                            },
+                            onSwipeLeft: (context) {
+                              libraryNotifier.toggleSelection(item);
+                            },
+                          ),
                       // Padding to clear the FAB
                       const SizedBox(height: 56.0 + 16.0),
                     ],
@@ -290,12 +332,32 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // libraryPreferences.displayMode.cycle(DisplayMode.values);
-            ref
-                .read(appearancePreferencesProvider)
-                .themeMode
-                .cycle(ThemeMode.values);
+          onPressed: () async {
+            final WorkEntity? newWork = await showDialog<WorkEntity?>(
+              context: context,
+              builder: (context) {
+                return AddWorkDialog();
+              },
+            );
+
+            if (newWork != null && context.mounted) {
+              try {
+                await workRepository.saveWork(newWork);
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Work added successfully!'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+                libraryNotifier.refresh();
+              } catch (e) {
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to add work: $e')),
+                );
+              }
+            }
           },
           child: const Icon(Symbols.add),
         ),
@@ -345,8 +407,19 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
                 IconButton(
                   icon: const Icon(Symbols.delete),
                   tooltip: 'Delete',
-                  onPressed: () {
-                    // Handle share action
+                  onPressed: () async {
+                    final selectedWorks =
+                        libraryState.maybeWhen(
+                              data:
+                                  (data) =>
+                                      data.selectedItems
+                                          .map((e) => e.work.id)
+                                          .toList(),
+                              orElse: () => [],
+                            )
+                            as List<String>;
+                    workRepository.deleteWorks(selectedWorks);
+                    _refreshKey.currentState?.show();
                   },
                 ),
               ],

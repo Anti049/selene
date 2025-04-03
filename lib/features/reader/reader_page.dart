@@ -7,21 +7,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/common/widgets/empty.dart';
 import 'package:selene/common/widgets/padded_appbar.dart';
+import 'package:selene/core/constants/animation_constants.dart';
+import 'package:selene/domain/entities/work_entity.dart';
 import 'package:selene/features/banners/providers/fullscreen_provider.dart';
 import 'package:selene/features/reader/providers/reader_preferences.dart';
 import 'package:selene/features/reader/widgets/reorder_dialog.dart';
 import 'package:selene/features/reader/widgets/setting_button.dart';
 import 'package:selene/features/reader/widgets/setting_sheet.dart';
-import 'package:selene/features/story/models/story.dart';
-import 'package:selene/utils/constants.dart';
 import 'package:selene/utils/enums.dart';
 import 'package:selene/utils/theming.dart';
 
 @RoutePage()
 class ReaderPage extends ConsumerStatefulWidget {
-  const ReaderPage({super.key, required this.story, this.chapter});
+  const ReaderPage({super.key, required this.work, this.chapter});
 
-  final Story story;
+  final WorkEntity work;
   final int? chapter;
 
   @override
@@ -181,7 +181,7 @@ class _ReaderPageState extends ConsumerState<ReaderPage>
 
     int selectedChapter = widget.chapter ?? 1;
     final multiLineButtons = readerPrefs.multiLineButtons.get();
-    final systemNavigationHeight = MediaQuery.of(context).viewPadding.bottom;
+    final systemNavigationHeight = context.mediaQuery.viewPadding.bottom;
 
     final options = _getOptions(context);
     final numColumns = 5;
@@ -189,7 +189,7 @@ class _ReaderPageState extends ConsumerState<ReaderPage>
 
     return Scaffold(
       appBar: PaddedAppBar(
-        title: Text(widget.story.title ?? 'Story'),
+        title: Text(widget.work.title),
         subtitle: 'Chapter $selectedChapter',
         visible: showControls,
       ),

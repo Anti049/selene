@@ -4,7 +4,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
 import 'package:selene/features/settings/screens/appearance/themes/models/theme.dart';
-import 'package:selene/utils/responsive_layout.dart';
+import 'package:selene/core/constants/layout_constants.dart';
 import 'package:selene/utils/theming.dart';
 
 class ThemePreview extends ConsumerWidget {
@@ -22,8 +22,8 @@ class ThemePreview extends ConsumerWidget {
         ResponsiveValue(
           context,
           conditionalValues: [
-            const Condition.equals(name: COMPACT, value: 20.0),
-            const Condition.equals(name: MEDIUM, value: 24.0),
+            const Condition.equals(name: kCompact, value: 20.0),
+            const Condition.equals(name: kMedium, value: 24.0),
           ],
           defaultValue: 36.0,
         ).value;
@@ -79,7 +79,7 @@ class ThemePreview extends ConsumerWidget {
         ResponsiveValue(
           context,
           conditionalValues: [
-            const Condition.equals(name: COMPACT, value: 4.0),
+            const Condition.equals(name: kCompact, value: 4.0),
           ],
           defaultValue: 8.0,
         ).value;
@@ -155,8 +155,8 @@ class ThemePreview extends ConsumerWidget {
         ResponsiveValue(
           context,
           conditionalValues: [
-            const Condition.equals(name: COMPACT, value: 32.0),
-            const Condition.equals(name: MEDIUM, value: 40.0),
+            const Condition.equals(name: kCompact, value: 32.0),
+            const Condition.equals(name: kMedium, value: 40.0),
           ],
           defaultValue: 48.0,
         ).value;

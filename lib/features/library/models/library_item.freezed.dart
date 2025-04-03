@@ -17,7 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$LibraryItem {
   int get id => throw _privateConstructorUsedError;
-  Story get story => throw _privateConstructorUsedError;
+  WorkEntity get work => throw _privateConstructorUsedError;
 
   /// Create a copy of LibraryItem
   /// with the given fields replaced by the non-null parameter values.
@@ -32,7 +32,7 @@ abstract class $LibraryItemCopyWith<$Res> {
           LibraryItem value, $Res Function(LibraryItem) then) =
       _$LibraryItemCopyWithImpl<$Res, LibraryItem>;
   @useResult
-  $Res call({int id, Story story});
+  $Res call({int id, WorkEntity work});
 }
 
 /// @nodoc
@@ -51,17 +51,17 @@ class _$LibraryItemCopyWithImpl<$Res, $Val extends LibraryItem>
   @override
   $Res call({
     Object? id = null,
-    Object? story = null,
+    Object? work = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      story: null == story
-          ? _value.story
-          : story // ignore: cast_nullable_to_non_nullable
-              as Story,
+      work: null == work
+          ? _value.work
+          : work // ignore: cast_nullable_to_non_nullable
+              as WorkEntity,
     ) as $Val);
   }
 }
@@ -74,7 +74,7 @@ abstract class _$$LibraryItemImplCopyWith<$Res>
       __$$LibraryItemImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, Story story});
+  $Res call({int id, WorkEntity work});
 }
 
 /// @nodoc
@@ -91,17 +91,17 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? story = null,
+    Object? work = null,
   }) {
     return _then(_$LibraryItemImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      story: null == story
-          ? _value.story
-          : story // ignore: cast_nullable_to_non_nullable
-              as Story,
+      work: null == work
+          ? _value.work
+          : work // ignore: cast_nullable_to_non_nullable
+              as WorkEntity,
     ));
   }
 }
@@ -109,16 +109,16 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$LibraryItemImpl extends _LibraryItem {
-  const _$LibraryItemImpl({required this.id, required this.story}) : super._();
+  const _$LibraryItemImpl({required this.id, required this.work}) : super._();
 
   @override
   final int id;
   @override
-  final Story story;
+  final WorkEntity work;
 
   @override
   String toString() {
-    return 'LibraryItem(id: $id, story: $story)';
+    return 'LibraryItem(id: $id, work: $work)';
   }
 
   @override
@@ -127,11 +127,11 @@ class _$LibraryItemImpl extends _LibraryItem {
         (other.runtimeType == runtimeType &&
             other is _$LibraryItemImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.story, story) || other.story == story));
+            (identical(other.work, work) || other.work == work));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, story);
+  int get hashCode => Object.hash(runtimeType, id, work);
 
   /// Create a copy of LibraryItem
   /// with the given fields replaced by the non-null parameter values.
@@ -144,13 +144,14 @@ class _$LibraryItemImpl extends _LibraryItem {
 
 abstract class _LibraryItem extends LibraryItem {
   const factory _LibraryItem(
-      {required final int id, required final Story story}) = _$LibraryItemImpl;
+      {required final int id,
+      required final WorkEntity work}) = _$LibraryItemImpl;
   const _LibraryItem._() : super._();
 
   @override
   int get id;
   @override
-  Story get story;
+  WorkEntity get work;
 
   /// Create a copy of LibraryItem
   /// with the given fields replaced by the non-null parameter values.

@@ -25,8 +25,8 @@ class SortTab extends ConsumerWidget {
                       preferences.sortBy.get() == s
                           ? preferences.sortDirection.get() ==
                                   SortDirection.ascending
-                              ? Symbols.arrow_upward
-                              : Symbols.arrow_downward
+                              ? Symbols.arrow_downward
+                              : Symbols.arrow_upward
                           : null,
                   onClick: () {
                     if (preferences.sortBy.get() == s) {

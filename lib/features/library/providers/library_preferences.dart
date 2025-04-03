@@ -20,7 +20,7 @@ class LibraryPreferences {
         filterUpdated.get() != TriState.disabled;
     bool sortActive =
         sortBy.get() != SortBy.alphabetically ||
-        sortDirection.get() != SortDirection.descending;
+        sortDirection.get() != SortDirection.ascending;
 
     return filtersActive || sortActive;
   }
@@ -36,7 +36,7 @@ class LibraryPreferences {
 
     int sortActive = 0;
     if (sortBy.get() != SortBy.alphabetically) sortActive++;
-    if (sortDirection.get() != SortDirection.descending) sortActive++;
+    if (sortDirection.get() != SortDirection.ascending) sortActive++;
 
     return filtersActive + sortActive;
   }
