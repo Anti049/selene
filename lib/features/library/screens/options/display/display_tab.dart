@@ -8,12 +8,15 @@ import 'package:selene/utils/theming.dart';
 
 @RoutePage()
 class DisplayTab extends ConsumerWidget {
-  const DisplayTab({super.key});
+  const DisplayTab({super.key, this.scrollController});
+
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final preferences = ref.watch(libraryPreferencesProvider);
     return ListView(
+      controller: scrollController,
       shrinkWrap: true,
       children: [
         Padding(

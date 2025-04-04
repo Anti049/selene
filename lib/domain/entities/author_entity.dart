@@ -1,12 +1,16 @@
-import 'package:change_case/change_case.dart';
 import 'package:selene/domain/entities/work_entity.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class AuthorEntity {
-  final String id;
-  final String name;
-  final String? url;
-  final List<WorkEntity> works;
+part 'author_entity.freezed.dart';
 
-  AuthorEntity({required this.name, this.url, this.works = const []})
-    : id = name.toKebabCase().replaceAll(RegExp(r'[^a-zA-Z0-9-]'), '');
+@freezed
+class AuthorEntity with _$AuthorEntity {
+  const AuthorEntity._();
+
+  const factory AuthorEntity({
+    required String id,
+    required String name,
+    String? url,
+    @Default([]) List<WorkEntity> works,
+  }) = _AuthorEntity;
 }

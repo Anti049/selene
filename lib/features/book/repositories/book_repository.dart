@@ -2,6 +2,8 @@ import 'package:selene/features/book/models/book.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+part 'book_repository.g.dart';
+
 abstract interface class IBookRepository {
   IBookRepository({required this.format, required this.extensions});
 

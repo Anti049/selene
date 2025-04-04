@@ -9,18 +9,19 @@ environment:
 dependencies:
     animated_visibility: ^0.0.4
     appbar_animated: ^0.0.3
-    archive: ^4.0.4
     auto_route: ^9.2.2
     change_case: ^2.2.0
     collection: ^1.19.1
     cupertino_icons: ^1.0.8
     dartx: ^1.2.0
     device_info_plus: ^11.3.3
+    draggable_menu: ^4.4.1
     drift: ^2.26.0
     drift_flutter: ^0.2.4
     dynamic_color: ^1.7.0
     easy_localization: ^3.0.7+1
     easy_localization_loader: ^2.0.2
+    epubx: ^4.0.0
     expand_widget: ^3.1.1
     expandable_text: ^2.3.0
     file_picker: ^9.0.2
@@ -31,9 +32,9 @@ dependencies:
     flutter:
         sdk: flutter
     flutter_card_swiper: ^7.0.2
-    flutter_launcher_icons: ^0.14.3
+    # flutter_launcher_icons: ^0.14.3
     flutter_layout_grid: ^2.0.7
-    flutter_native_splash: ^2.4.5
+    # flutter_native_splash: ^2.4.5
     flutter_riverpod: ^2.6.1
     flutter_slidable: ^4.0.0
     flutter_svg: ^2.0.17

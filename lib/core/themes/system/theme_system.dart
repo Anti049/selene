@@ -6,5 +6,5 @@ final themeSystem = SeleneTheme(
   id: 'system',
   name: 'System',
   category: ThemeCategory.system,
-  primary: Color(0xFF5F52DE).hex,
+  primary: Color(0xFF0E53AA).hex,
 );

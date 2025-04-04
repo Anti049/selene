@@ -120,7 +120,7 @@ class LibraryState extends _$LibraryState {
     // Sort works
     final sortBy = libraryPrefs.sortBy.get();
     final sortDirection = libraryPrefs.sortDirection.get();
-    final dirMultiplier = sortDirection == SortDirection.ascending ? 1 : -1;
+    final dirMultiplier = sortDirection == SortDirection.descending ? 1 : -1;
     works.sort((a, b) {
       int comparison = 0;
       switch (sortBy) {

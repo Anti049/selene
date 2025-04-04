@@ -54,7 +54,7 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _calculateTruncations();
+    // _calculateTruncations();
   }
 
   Future<void> _loadWork() async {
@@ -66,7 +66,7 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
     setState(() {
       _work = work;
     });
-    _calculateTruncations();
+    // _calculateTruncations();
   }
 
   void _calculateTruncations() {
@@ -178,9 +178,15 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
         TagType.freeform => prefs.showFreeformTags.get(),
         _ => false,
       };
-      final typeTags =
-          tags.where((tag) => tag.type == type).toList()
-            ..sort((a, b) => a.name.compareTo(b.name));
+      final typeTags = tags.where((tag) => tag.type == type).toList();
+      // Only sort if not info or freeform tags, as they should maintain their order
+      typeTags.sort((a, b) {
+        // Sort by name for all types except info and freeform
+        if (type == TagType.info || type == TagType.freeform) {
+          return 0; // Maintain original order for info and freeform
+        }
+        return a.name.compareTo(b.name);
+      });
       if (typeTags.isNotEmpty && showTags) {
         sortedTags.add(typeTags);
       }
@@ -191,6 +197,9 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
 
   @override
   Widget build(BuildContext context) {
+    final prefs = ref.watch(libraryPreferencesProvider);
+
+    // _calculateTruncations();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: GestureDetector(
@@ -217,13 +226,34 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   spacing: 16,
                   children: [
+                    if (widget.selected)
+                      IconButton(
+                        icon: Icon(
+                          Symbols.circle,
+                          fill:
+                              widget.selected
+                                  ? 1.0
+                                  : 0.0, // Fill icon based on selection
+                          color:
+                              widget.selected
+                                  ? context.scheme.onPrimaryContainer
+                                  : context.scheme.onSurfaceVariant,
+                          size: 24.0,
+                        ),
+                        onPressed: () {
+                          // Handle circle icon tap, if needed
+                          widget.onSwipeLeft(
+                            context,
+                          ); // Example action for left swipe
+                        },
+                      ),
                     Expanded(
                       child: Container(
                         clipBehavior: Clip.antiAlias,
@@ -293,7 +323,7 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
                                   child: Container(
                                     key: _authorNamesKey, // Assign the key here
                                     child: Text(
-                                      _authorText,
+                                      widget.work.authorNames,
                                       style: context.text.labelSmall?.copyWith(
                                         color:
                                             widget.selected
@@ -320,6 +350,7 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 8.0,
                       children: [
                         IconButton(
                           icon: Icon(
@@ -329,12 +360,15 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
                           ),
                           onPressed: _toggleExpanded,
                         ),
-                        IconButton.filled(
-                          icon: Icon(Symbols.play_arrow, fill: 1.0),
-                          onPressed: () {
-                            context.router.push(ReaderRoute(work: widget.work));
-                          },
-                        ),
+                        if (prefs.continueReadingButton.get())
+                          IconButton.filled(
+                            icon: Icon(Symbols.play_arrow, fill: 1.0),
+                            onPressed: () {
+                              context.router.push(
+                                ReaderRoute(work: widget.work),
+                              );
+                            },
+                          ),
                       ],
                     ),
                   ],
