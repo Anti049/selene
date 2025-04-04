@@ -4,11 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
 class TagsTab extends ConsumerWidget {
-  const TagsTab({super.key});
+  const TagsTab({super.key, this.scrollController});
+
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView(
+      controller: scrollController,
       shrinkWrap: true,
       children: [
         ListTile(title: const Text('Tag 1'), onTap: () {}),

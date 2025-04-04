@@ -344,33 +344,26 @@ class _WorkDetailsPageState extends ConsumerState<WorkDetailsPage> {
                 isInWebView: isInWebView,
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
                 child: ExpandableText(
                   text: _work.description ?? '',
                   maxLines: 3,
                   onExpanded: setExpanded,
                 ),
               ),
-              // Fandom Tags
-              DetailsTagSection(
-                isExpanded: _isExpanded,
-                tags: _work.getTagsByType(TagType.fandom),
-              ),
-              // Character Tags
-              DetailsTagSection(
-                isExpanded: _isExpanded,
-                tags: _work.getTagsByType(TagType.character),
-              ),
-              // Relationship Tags
-              DetailsTagSection(
-                isExpanded: _isExpanded,
-                tags: _work.getTagsByType(TagType.relationship),
-              ),
-              // Freeform Tags
-              DetailsTagSection(
-                isExpanded: _isExpanded,
-                tags: _work.getTagsByType(TagType.freeform),
-              ),
+              // Tags
+              ...[
+                if (_work.tags.isNotEmpty)
+                  for (final type in TagType.values)
+                    if (_work.tags.any((tag) => tag.type == type))
+                      DetailsTagSection(
+                        isExpanded: _isExpanded,
+                        tags:
+                            _work.tags
+                                .where((tag) => tag.type == type)
+                                .toList(),
+                      ),
+              ],
               SizedBox(
                 width: double.infinity,
                 child: Padding(

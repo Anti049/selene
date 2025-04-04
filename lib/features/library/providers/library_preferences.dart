@@ -12,31 +12,33 @@ class LibraryPreferences {
 
   bool get optionsActive {
     bool filtersActive =
-        filterDownloaded.get() != TriState.disabled ||
-        filterUnread.get() != TriState.disabled ||
-        filterStarted.get() != TriState.disabled ||
-        filterCompleted.get() != TriState.disabled ||
-        filterBookmarked.get() != TriState.disabled ||
-        filterUpdated.get() != TriState.disabled;
+        filterDownloaded.get() != filterDownloaded.defaultValue ||
+        filterUnread.get() != filterUnread.defaultValue ||
+        filterStarted.get() != filterStarted.defaultValue ||
+        filterCompleted.get() != filterCompleted.defaultValue ||
+        filterBookmarked.get() != filterBookmarked.defaultValue ||
+        filterUpdated.get() != filterUpdated.defaultValue;
     bool sortActive =
-        sortBy.get() != SortBy.alphabetically ||
-        sortDirection.get() != SortDirection.ascending;
+        sortBy.get() != sortBy.defaultValue ||
+        sortDirection.get() != sortDirection.defaultValue;
 
     return filtersActive || sortActive;
   }
 
   int get numOptionsActive {
     int filtersActive = 0;
-    if (filterDownloaded.get() != TriState.disabled) filtersActive++;
-    if (filterUnread.get() != TriState.disabled) filtersActive++;
-    if (filterStarted.get() != TriState.disabled) filtersActive++;
-    if (filterCompleted.get() != TriState.disabled) filtersActive++;
-    if (filterBookmarked.get() != TriState.disabled) filtersActive++;
-    if (filterUpdated.get() != TriState.disabled) filtersActive++;
+    if (filterDownloaded.get() != filterDownloaded.defaultValue)
+      filtersActive++;
+    if (filterUnread.get() != filterUnread.defaultValue) filtersActive++;
+    if (filterStarted.get() != filterStarted.defaultValue) filtersActive++;
+    if (filterCompleted.get() != filterCompleted.defaultValue) filtersActive++;
+    if (filterBookmarked.get() != filterBookmarked.defaultValue)
+      filtersActive++;
+    if (filterUpdated.get() != filterUpdated.defaultValue) filtersActive++;
 
     int sortActive = 0;
-    if (sortBy.get() != SortBy.alphabetically) sortActive++;
-    if (sortDirection.get() != SortDirection.ascending) sortActive++;
+    if (sortBy.get() != sortBy.defaultValue) sortActive++;
+    if (sortDirection.get() != sortDirection.defaultValue) sortActive++;
 
     return filtersActive + sortActive;
   }
@@ -45,12 +47,12 @@ class LibraryPreferences {
 
   // Filters
   void resetFilters() {
-    filterDownloaded.set(TriState.disabled);
-    filterUnread.set(TriState.disabled);
-    filterStarted.set(TriState.disabled);
-    filterCompleted.set(TriState.disabled);
-    filterBookmarked.set(TriState.disabled);
-    filterUpdated.set(TriState.disabled);
+    filterDownloaded.reset();
+    filterUnread.reset();
+    filterStarted.reset();
+    filterCompleted.reset();
+    filterBookmarked.reset();
+    filterUpdated.reset();
   }
 
   Preference<TriState> get filterDownloaded => _preferences.getEnum(
@@ -80,8 +82,8 @@ class LibraryPreferences {
 
   // Sort
   void resetSort() {
-    sortBy.set(SortBy.alphabetically);
-    sortDirection.set(SortDirection.descending);
+    sortBy.reset();
+    sortDirection.reset();
   }
 
   Preference<SortBy> get sortBy =>
@@ -94,17 +96,17 @@ class LibraryPreferences {
 
   // Display
   void resetDisplay() {
-    displayMode.set(DisplayMode.comfortableGrid);
-    gridSize.set(0.0);
-    downloadedBadge.set(true);
-    unreadBadge.set(true);
-    localBadge.set(true);
-    languageBadge.set(true);
-    sourceBadge.set(true);
-    continueReadingButton.set(true);
-    showCategoryTabs.set(true);
-    showFavoriteTabs.set(true);
-    showWorkCount.set(true);
+    displayMode.reset();
+    gridSize.reset();
+    downloadedBadge.reset();
+    unreadBadge.reset();
+    localBadge.reset();
+    languageBadge.reset();
+    sourceBadge.reset();
+    continueReadingButton.reset();
+    showCategoryTabs.reset();
+    showFavoriteTabs.reset();
+    showWorkCount.reset();
   }
 
   Preference<DisplayMode> get displayMode => _preferences.getEnum(

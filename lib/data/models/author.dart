@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:selene/core/utils/isar_id.dart';
 import 'package:selene/data/models/work.dart';
 import 'package:selene/domain/entities/author_entity.dart';
 
@@ -31,6 +32,7 @@ class Author {
 
   AuthorEntity toEntity() {
     return AuthorEntity(
+      id: generateID(text: name),
       name: name ?? '',
       url: url,
       works: [], // Populate with linked works if needed

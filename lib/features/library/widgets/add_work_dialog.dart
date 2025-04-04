@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/common/widgets/common_dialog.dart';
+import 'package:selene/core/utils/isar_id.dart';
 import 'package:selene/domain/entities/author_entity.dart';
 import 'package:selene/domain/entities/tag_entity.dart';
 import 'package:selene/domain/entities/work_entity.dart';
@@ -36,6 +37,7 @@ class _AddWorkDialogState extends State<AddWorkDialog> {
         authors: List<AuthorEntity>.generate(
           Random().nextInt(9) + 1,
           (index) => AuthorEntity(
+            id: generateID(),
             name: 'Author ${index + 1}', // Placeholder author names
             url: 'http://example.com/author${index + 1}',
           ),

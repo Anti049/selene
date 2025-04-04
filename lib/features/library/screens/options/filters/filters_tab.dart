@@ -6,12 +6,15 @@ import 'package:selene/features/settings/widgets/setting/checkbox_setting.dart';
 
 @RoutePage()
 class FiltersTab extends ConsumerWidget {
-  const FiltersTab({super.key});
+  const FiltersTab({super.key, this.scrollController});
+
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final preferences = ref.watch(libraryPreferencesProvider);
     return ListView(
+      controller: scrollController,
       shrinkWrap: true,
       children: [
         CheckboxSettingWidget(

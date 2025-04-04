@@ -1,5 +1,6 @@
 import 'package:animated_visibility/animated_visibility.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:draggable_menu/draggable_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -13,6 +14,10 @@ import 'package:selene/features/banners/widgets/banner_scaffold.dart';
 import 'package:selene/features/library/models/library_model.dart';
 import 'package:selene/features/library/providers/library_preferences.dart';
 import 'package:selene/features/library/providers/library_state.dart';
+import 'package:selene/features/library/screens/options/display/display_tab.dart';
+import 'package:selene/features/library/screens/options/filters/filters_tab.dart';
+import 'package:selene/features/library/screens/options/sort/sort_tab.dart';
+import 'package:selene/features/library/screens/options/tags/tags_tab.dart';
 import 'package:selene/features/library/widgets/add_work_dialog.dart';
 import 'package:selene/features/library/widgets/library_item/library_item_component.dart';
 import 'package:selene/features/library/widgets/library_item/library_list_item.dart';
@@ -38,10 +43,35 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
 
   bool _searchActive = false;
   final _scrollController = ScrollController();
-  final _menuController = MenuController();
+  final DraggableMenuController _draggableMenuController =
+      DraggableMenuController(); // Controller for the draggable menu
 
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
+
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   // Test load an epub file
+  //   final epubReader = ref.read(epubBookRepositoryProvider);
+  //   epubReader
+  //       .read(
+  //         'C:/Users/1099996508.adm/Documents/Books/Alice in Wonderland.epub',
+  //       )
+  //       .then((book) {
+  //         // Successfully read the book, do something with it
+  //         debugPrint('Successfully read EPUB: ${book.file.path}');
+  //         if (book.work == null) {
+  //           return;
+  //         }
+  //         final workRepository = ref.read(workRepositoryProvider);
+  //         workRepository.saveWork(book.work as WorkEntity);
+  //       })
+  //       .catchError((error) {
+  //         debugPrint('Failed to read EPUB: $error');
+  //       });
+  // }
 
   // only override if this is a tab page
   @override
@@ -137,44 +167,19 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
               },
               icon: const Icon(Symbols.search),
             ),
-          MenuAnchor(
-            controller: _menuController,
-            menuChildren: [
-              MenuItemButton(
-                onPressed: () {},
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  child: const Text('Filter Options'),
-                ),
+          IconButton(
+            icon: Badge(
+              label: Text(prefs.numOptionsActive.toString()),
+              isLabelVisible: prefs.optionsActive,
+              child: Icon(
+                Symbols.filter_alt,
+                color: prefs.optionsActive ? context.scheme.primary : null,
+                fill: prefs.optionsActive ? 1.0 : 0.0,
               ),
-              MenuItemButton(
-                onPressed: () => router.push(const LibraryOptionsRoute()),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  child: const Text('Filter by Tag'),
-                ),
-              ),
-            ],
-            child: IconButton(
-              icon: Badge(
-                label: Text(prefs.numOptionsActive.toString()),
-                isLabelVisible: prefs.optionsActive,
-                child: Icon(
-                  Symbols.filter_alt,
-                  color: prefs.optionsActive ? context.scheme.primary : null,
-                  fill: prefs.optionsActive ? 1.0 : 0.0,
-                ),
-              ),
-              onPressed: () {
-                _menuController.toggle();
-              },
             ),
+            onPressed: () {
+              _showOptionsSheet(context);
+            },
           ),
           const SizedBox(),
           IconButton(
@@ -364,6 +369,54 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
     await notifier.refresh();
   }
 
+  void _showOptionsSheet(BuildContext context) {
+    DraggableMenu.open(
+      context,
+      DraggableMenu(
+        curve: kAnimationCurve,
+        animationDuration: kAnimationDuration,
+        controller: _draggableMenuController,
+        levels: [
+          DraggableMenuLevel.ratio(
+            ratio: 0.6,
+          ), // Initial height of the menu (60% of screen height)
+          DraggableMenuLevel.ratio(ratio: 1.0),
+        ],
+        child: DefaultTabController(
+          length: 4,
+          child: Column(
+            children: [
+              TabBar(
+                tabs: [
+                  Tab(text: 'Filter'),
+                  Tab(text: 'Sort'),
+                  Tab(text: 'Display'),
+                  Tab(text: 'Tags'),
+                ],
+                onTap: (value) {
+                  if (value == 3) {
+                    _draggableMenuController.animateTo(1);
+                  }
+                },
+              ),
+              Expanded(
+                // TabBarView needs to fill the remaining space
+                child: TabBarView(
+                  children: [
+                    FiltersTab(), // Filter options tab
+                    SortTab(), // Sort options tab
+                    DisplayTab(), // Display options tab
+                    TagsTab(), // Tags options tab
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -446,15 +499,5 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
         bottomNavigationBar: _getBottomSheet(context),
       ),
     );
-  }
-}
-
-extension on MenuController {
-  void toggle() {
-    if (isOpen) {
-      close();
-    } else {
-      open();
-    }
   }
 }

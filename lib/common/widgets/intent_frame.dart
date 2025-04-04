@@ -80,7 +80,7 @@ class IntentFrame extends StatelessWidget {
                 ),
                 child:
                     false // isChildScrollable
-                        ? child
+                        ? child // TODO: Handle scrollable types properly, e.g. ListView, GridView etc.
                         : SingleChildScrollView(
                           physics: const AlwaysScrollableScrollPhysics(),
                           child: ConstrainedBox(

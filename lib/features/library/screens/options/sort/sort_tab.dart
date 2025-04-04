@@ -9,12 +9,15 @@ import 'package:selene/utils/enums.dart';
 
 @RoutePage()
 class SortTab extends ConsumerWidget {
-  const SortTab({super.key});
+  const SortTab({super.key, this.scrollController});
+
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final preferences = ref.watch(libraryPreferencesProvider);
     return ListView(
+      controller: scrollController,
       shrinkWrap: true,
       children:
           SortBy.values
@@ -24,7 +27,7 @@ class SortTab extends ConsumerWidget {
                   icon:
                       preferences.sortBy.get() == s
                           ? preferences.sortDirection.get() ==
-                                  SortDirection.ascending
+                                  SortDirection.descending
                               ? Symbols.arrow_downward
                               : Symbols.arrow_upward
                           : null,

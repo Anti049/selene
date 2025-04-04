@@ -1,5 +1,5 @@
 // Responsive layout breakpoint names
-const kCompact = 'kCompact';
+const kCompact = 'COMPACT';
 const kMedium = 'MEDIUM';
 const kExpanded = 'EXPANDED';
 const kLarge = 'LARGE';
