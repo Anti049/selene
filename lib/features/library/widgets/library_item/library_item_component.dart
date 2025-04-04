@@ -197,6 +197,8 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
 
   @override
   Widget build(BuildContext context) {
+    final prefs = ref.watch(libraryPreferencesProvider);
+
     // _calculateTruncations();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
@@ -358,12 +360,15 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
                           ),
                           onPressed: _toggleExpanded,
                         ),
-                        IconButton.filled(
-                          icon: Icon(Symbols.play_arrow, fill: 1.0),
-                          onPressed: () {
-                            context.router.push(ReaderRoute(work: widget.work));
-                          },
-                        ),
+                        if (prefs.continueReadingButton.get())
+                          IconButton.filled(
+                            icon: Icon(Symbols.play_arrow, fill: 1.0),
+                            onPressed: () {
+                              context.router.push(
+                                ReaderRoute(work: widget.work),
+                              );
+                            },
+                          ),
                       ],
                     ),
                   ],

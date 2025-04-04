@@ -395,7 +395,7 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
                 ],
                 onTap: (value) {
                   if (value == 3) {
-                    _draggableMenuController.animateTo(1);
+                    // _draggableMenuController.animateTo(1);
                   }
                 },
               ),
