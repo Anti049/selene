@@ -65,7 +65,7 @@ enum DisplayMode {
   comfortableGrid('Comfortable Grid'),
   coverOnlyGrid('Cover-Only Grid'),
   list('List'),
-  componentList('Component List');
+  componentList('Components');
 
   const DisplayMode(this.label);
   final String label;

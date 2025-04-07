@@ -16,6 +16,7 @@ class FiltersTab extends ConsumerWidget {
     return ListView(
       controller: scrollController,
       shrinkWrap: true,
+      padding: EdgeInsets.zero,
       children: [
         CheckboxSettingWidget(
           title: 'Downloaded',

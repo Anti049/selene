@@ -218,9 +218,11 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
       return const Empty(message: 'No works found.');
     }
 
+    final displayMode = DisplayMode.componentList;
+
     final children = [
       for (final item in model.libraryItems)
-        switch (prefs.displayMode.get()) {
+        switch (displayMode) {
           // Handle the display mode for each item
           DisplayMode.compactGrid ||
           DisplayMode.comfortableGrid ||
@@ -376,6 +378,7 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
         curve: kAnimationCurve,
         animationDuration: kAnimationDuration,
         controller: _draggableMenuController,
+        ui: ClassicDraggableMenu(color: context.scheme.surfaceContainer),
         levels: [
           DraggableMenuLevel.ratio(
             ratio: 0.6,
@@ -400,14 +403,8 @@ class _LibraryTabState extends ConsumerState<LibraryTab>
                 },
               ),
               Expanded(
-                // TabBarView needs to fill the remaining space
                 child: TabBarView(
-                  children: [
-                    FiltersTab(), // Filter options tab
-                    SortTab(), // Sort options tab
-                    DisplayTab(), // Display options tab
-                    TagsTab(), // Tags options tab
-                  ],
+                  children: [FiltersTab(), SortTab(), DisplayTab(), TagsTab()],
                 ),
               ),
             ],

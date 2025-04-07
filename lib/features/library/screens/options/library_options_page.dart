@@ -18,7 +18,7 @@ class LibraryOptionsPage extends ConsumerWidget {
     final tabItems = [
       ScreenTab(
         title: 'Tags',
-        route: const TagsRoute(),
+        route: TagsRoute(),
         actions: [
           IconButton(
             icon: const Icon(Symbols.save),
@@ -39,7 +39,7 @@ class LibraryOptionsPage extends ConsumerWidget {
       ),
       ScreenTab(
         title: 'Filters',
-        route: const FiltersRoute(),
+        route: FiltersRoute(),
         actions: [
           IconButton(
             icon: const Icon(Symbols.refresh),
@@ -52,7 +52,7 @@ class LibraryOptionsPage extends ConsumerWidget {
       ),
       ScreenTab(
         title: 'Sort',
-        route: const SortRoute(),
+        route: SortRoute(),
         actions: [
           IconButton(
             icon: const Icon(Symbols.refresh),
@@ -65,7 +65,7 @@ class LibraryOptionsPage extends ConsumerWidget {
       ),
       ScreenTab(
         title: 'Display',
-        route: const DisplayRoute(),
+        route: DisplayRoute(),
         actions: [
           IconButton(
             icon: const Icon(Symbols.refresh),

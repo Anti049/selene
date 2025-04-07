@@ -13,6 +13,7 @@ class TagsTab extends ConsumerWidget {
     return ListView(
       controller: scrollController,
       shrinkWrap: true,
+      padding: EdgeInsets.zero,
       children: [
         ListTile(title: const Text('Tag 1'), onTap: () {}),
         ListTile(title: const Text('Tag 2'), onTap: () {}),

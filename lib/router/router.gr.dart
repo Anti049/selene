@@ -125,10 +125,17 @@ class BrowseRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.DisplayTab]
-class DisplayRoute extends _i23.PageRouteInfo<void> {
-  const DisplayRoute({List<_i23.PageRouteInfo>? children})
-      : super(
+class DisplayRoute extends _i23.PageRouteInfo<DisplayRouteArgs> {
+  DisplayRoute({
+    _i24.Key? key,
+    _i24.ScrollController? scrollController,
+    List<_i23.PageRouteInfo>? children,
+  }) : super(
           DisplayRoute.name,
+          args: DisplayRouteArgs(
+            key: key,
+            scrollController: scrollController,
+          ),
           initialChildren: children,
         );
 
@@ -137,9 +144,30 @@ class DisplayRoute extends _i23.PageRouteInfo<void> {
   static _i23.PageInfo page = _i23.PageInfo(
     name,
     builder: (data) {
-      return const _i5.DisplayTab();
+      final args =
+          data.argsAs<DisplayRouteArgs>(orElse: () => const DisplayRouteArgs());
+      return _i5.DisplayTab(
+        key: args.key,
+        scrollController: args.scrollController,
+      );
     },
   );
+}
+
+class DisplayRouteArgs {
+  const DisplayRouteArgs({
+    this.key,
+    this.scrollController,
+  });
+
+  final _i24.Key? key;
+
+  final _i24.ScrollController? scrollController;
+
+  @override
+  String toString() {
+    return 'DisplayRouteArgs{key: $key, scrollController: $scrollController}';
+  }
 }
 
 /// generated route for
@@ -163,10 +191,17 @@ class ExtensionsRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.FiltersTab]
-class FiltersRoute extends _i23.PageRouteInfo<void> {
-  const FiltersRoute({List<_i23.PageRouteInfo>? children})
-      : super(
+class FiltersRoute extends _i23.PageRouteInfo<FiltersRouteArgs> {
+  FiltersRoute({
+    _i24.Key? key,
+    _i24.ScrollController? scrollController,
+    List<_i23.PageRouteInfo>? children,
+  }) : super(
           FiltersRoute.name,
+          args: FiltersRouteArgs(
+            key: key,
+            scrollController: scrollController,
+          ),
           initialChildren: children,
         );
 
@@ -175,9 +210,30 @@ class FiltersRoute extends _i23.PageRouteInfo<void> {
   static _i23.PageInfo page = _i23.PageInfo(
     name,
     builder: (data) {
-      return const _i7.FiltersTab();
+      final args =
+          data.argsAs<FiltersRouteArgs>(orElse: () => const FiltersRouteArgs());
+      return _i7.FiltersTab(
+        key: args.key,
+        scrollController: args.scrollController,
+      );
     },
   );
+}
+
+class FiltersRouteArgs {
+  const FiltersRouteArgs({
+    this.key,
+    this.scrollController,
+  });
+
+  final _i24.Key? key;
+
+  final _i24.ScrollController? scrollController;
+
+  @override
+  String toString() {
+    return 'FiltersRouteArgs{key: $key, scrollController: $scrollController}';
+  }
 }
 
 /// generated route for
@@ -386,10 +442,17 @@ class SettingsRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i17.SortTab]
-class SortRoute extends _i23.PageRouteInfo<void> {
-  const SortRoute({List<_i23.PageRouteInfo>? children})
-      : super(
+class SortRoute extends _i23.PageRouteInfo<SortRouteArgs> {
+  SortRoute({
+    _i24.Key? key,
+    _i24.ScrollController? scrollController,
+    List<_i23.PageRouteInfo>? children,
+  }) : super(
           SortRoute.name,
+          args: SortRouteArgs(
+            key: key,
+            scrollController: scrollController,
+          ),
           initialChildren: children,
         );
 
@@ -398,9 +461,30 @@ class SortRoute extends _i23.PageRouteInfo<void> {
   static _i23.PageInfo page = _i23.PageInfo(
     name,
     builder: (data) {
-      return const _i17.SortTab();
+      final args =
+          data.argsAs<SortRouteArgs>(orElse: () => const SortRouteArgs());
+      return _i17.SortTab(
+        key: args.key,
+        scrollController: args.scrollController,
+      );
     },
   );
+}
+
+class SortRouteArgs {
+  const SortRouteArgs({
+    this.key,
+    this.scrollController,
+  });
+
+  final _i24.Key? key;
+
+  final _i24.ScrollController? scrollController;
+
+  @override
+  String toString() {
+    return 'SortRouteArgs{key: $key, scrollController: $scrollController}';
+  }
 }
 
 /// generated route for
@@ -424,10 +508,17 @@ class SourcesRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i19.TagsTab]
-class TagsRoute extends _i23.PageRouteInfo<void> {
-  const TagsRoute({List<_i23.PageRouteInfo>? children})
-      : super(
+class TagsRoute extends _i23.PageRouteInfo<TagsRouteArgs> {
+  TagsRoute({
+    _i24.Key? key,
+    _i24.ScrollController? scrollController,
+    List<_i23.PageRouteInfo>? children,
+  }) : super(
           TagsRoute.name,
+          args: TagsRouteArgs(
+            key: key,
+            scrollController: scrollController,
+          ),
           initialChildren: children,
         );
 
@@ -436,9 +527,30 @@ class TagsRoute extends _i23.PageRouteInfo<void> {
   static _i23.PageInfo page = _i23.PageInfo(
     name,
     builder: (data) {
-      return const _i19.TagsTab();
+      final args =
+          data.argsAs<TagsRouteArgs>(orElse: () => const TagsRouteArgs());
+      return _i19.TagsTab(
+        key: args.key,
+        scrollController: args.scrollController,
+      );
     },
   );
+}
+
+class TagsRouteArgs {
+  const TagsRouteArgs({
+    this.key,
+    this.scrollController,
+  });
+
+  final _i24.Key? key;
+
+  final _i24.ScrollController? scrollController;
+
+  @override
+  String toString() {
+    return 'TagsRouteArgs{key: $key, scrollController: $scrollController}';
+  }
 }
 
 /// generated route for

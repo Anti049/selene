@@ -39,7 +39,7 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
   final GlobalKey _authorNamesKey = GlobalKey(); // Add this key
 
   bool _isExpanded = false;
-  String _authorText = '';
+  // String _authorText = '';
   late WorkEntity _work = widget.work;
 
   @override
@@ -69,87 +69,87 @@ class _LibraryItemComponentState extends ConsumerState<LibraryItemComponent> {
     // _calculateTruncations();
   }
 
-  void _calculateTruncations() {
-    final authorNames = widget.work.authorNames;
-    final authors = widget.work.authors;
-    bool tooManyAuthors = false;
-    int numExtraAuthors = 0;
+  // void _calculateTruncations() {
+  //   final authorNames = widget.work.authorNames;
+  //   final authors = widget.work.authors;
+  //   bool tooManyAuthors = false;
+  //   int numExtraAuthors = 0;
 
-    if (authorNames.isEmpty || authors.isEmpty) {
-      return;
-    }
+  //   if (authorNames.isEmpty || authors.isEmpty) {
+  //     return;
+  //   }
 
-    // Get the width of the Text widget
-    final RenderBox? renderBox =
-        _authorNamesKey.currentContext?.findRenderObject() as RenderBox?;
-    final maxWidth = renderBox?.size.width ?? double.infinity;
+  //   // Get the width of the Text widget
+  //   final RenderBox? renderBox =
+  //       _authorNamesKey.currentContext?.findRenderObject() as RenderBox?;
+  //   final maxWidth = renderBox?.size.width ?? double.infinity;
 
-    // Create a TextPainter to measure the text
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: authorNames,
-        style: context.text.labelSmall, // Use the same style as in the widget
-      ),
-      maxLines: 1, // Limit to one line
-      textDirection: TextDirection.ltr,
-    );
+  //   // Create a TextPainter to measure the text
+  //   final textPainter = TextPainter(
+  //     text: TextSpan(
+  //       text: authorNames,
+  //       style: context.text.labelSmall, // Use the same style as in the widget
+  //     ),
+  //     maxLines: 1, // Limit to one line
+  //     textDirection: TextDirection.ltr,
+  //   );
 
-    // Set the layout constraints
-    textPainter.layout(maxWidth: maxWidth);
+  //   // Set the layout constraints
+  //   textPainter.layout(maxWidth: maxWidth);
 
-    // Check if the text overflows
-    if (textPainter.didExceedMaxLines) {
-      tooManyAuthors = true;
+  //   // Check if the text overflows
+  //   if (textPainter.didExceedMaxLines) {
+  //     tooManyAuthors = true;
 
-      // Calculate the number of authors that fit
-      int overflowCount = 0;
+  //     // Calculate the number of authors that fit
+  //     int overflowCount = 0;
 
-      for (int i = 0; i < authors.length; i++) {
-        final testText = authors
-            .sublist(0, i + 1)
-            .map((author) => author.name)
-            .join(', ');
-        final andMoreText =
-            i < authors.length - 1
-                ? ', and ${authors.length - i - 1} more'
-                : '';
-        final fullTestText = '$testText$andMoreText';
-        textPainter.text = TextSpan(
-          text: fullTestText,
-          style: context.text.labelSmall,
-        );
-        textPainter.layout(maxWidth: maxWidth);
+  //     for (int i = 0; i < authors.length; i++) {
+  //       final testText = authors
+  //           .sublist(0, i + 1)
+  //           .map((author) => author.name)
+  //           .join(', ');
+  //       final andMoreText =
+  //           i < authors.length - 1
+  //               ? ', and ${authors.length - i - 1} more'
+  //               : '';
+  //       final fullTestText = '$testText$andMoreText';
+  //       textPainter.text = TextSpan(
+  //         text: fullTestText,
+  //         style: context.text.labelSmall,
+  //       );
+  //       textPainter.layout(maxWidth: maxWidth);
 
-        if (textPainter.didExceedMaxLines) {
-          overflowCount = authors.length - i;
-          break;
-        }
-      }
+  //       if (textPainter.didExceedMaxLines) {
+  //         overflowCount = authors.length - i;
+  //         break;
+  //       }
+  //     }
 
-      numExtraAuthors = overflowCount;
-    } else {
-      tooManyAuthors = false;
-      numExtraAuthors = 0;
-    }
+  //     numExtraAuthors = overflowCount;
+  //   } else {
+  //     tooManyAuthors = false;
+  //     numExtraAuthors = 0;
+  //   }
 
-    final visibleAuthorNames =
-        tooManyAuthors
-            ? authors
-                .sublist(0, authors.length - numExtraAuthors)
-                .map((author) => author.name)
-                .join(', ')
-            : authorNames;
+  //   final visibleAuthorNames =
+  //       tooManyAuthors
+  //           ? authors
+  //               .sublist(0, authors.length - numExtraAuthors)
+  //               .map((author) => author.name)
+  //               .join(', ')
+  //           : authorNames;
 
-    final showComma = authors.length > 2;
-    final authorNamesWithComma =
-        tooManyAuthors && numExtraAuthors > 0
-            ? '$visibleAuthorNames${showComma ? ',' : ''} and $numExtraAuthors more'
-            : visibleAuthorNames;
+  //   final showComma = authors.length > 2;
+  //   final authorNamesWithComma =
+  //       tooManyAuthors && numExtraAuthors > 0
+  //           ? '$visibleAuthorNames${showComma ? ',' : ''} and $numExtraAuthors more'
+  //           : visibleAuthorNames;
 
-    setState(() {
-      _authorText = tooManyAuthors ? authorNamesWithComma : authorNames;
-    });
-  }
+  //   setState(() {
+  //     _authorText = tooManyAuthors ? authorNamesWithComma : authorNames;
+  //   });
+  // }
 
   void _toggleExpanded() {
     setState(() {

@@ -19,6 +19,7 @@ class SortTab extends ConsumerWidget {
     return ListView(
       controller: scrollController,
       shrinkWrap: true,
+      padding: EdgeInsets.zero,
       children:
           SortBy.values
               .map(

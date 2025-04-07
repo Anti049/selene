@@ -18,6 +18,7 @@ class DisplayTab extends ConsumerWidget {
     return ListView(
       controller: scrollController,
       shrinkWrap: true,
+      padding: EdgeInsets.zero,
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
