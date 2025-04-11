@@ -3,7 +3,7 @@ import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/features/reader/widgets/setting_button.dart';
-import 'package:selene/features/settings/models/preference.dart';
+import 'package:selene/domain/models/preference.dart';
 import 'package:selene/utils/theming.dart';
 
 class SettingSheet extends ConsumerWidget {

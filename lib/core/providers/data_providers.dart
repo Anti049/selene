@@ -1,7 +1,13 @@
 // lib/core/providers/data_providers.dart (or similar)
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:selene/data/models/author.dart';
+import 'package:selene/data/models/tag.dart';
+import 'package:selene/data/models/work.dart';
 import 'package:selene/data/repositories/author_repository_impl.dart';
 import 'package:selene/data/repositories/tag_repository_impl.dart';
 
@@ -11,6 +17,7 @@ import 'package:selene/domain/repositories/i_author_repository.dart';
 import 'package:selene/domain/repositories/i_tag_repository.dart';
 // Domain Layer Imports
 import 'package:selene/domain/repositories/i_work_repository.dart'; // Your interface path
+import 'package:selene/features/settings/screens/appearance/themes/models/theme.dart';
 
 // Assuming 'isarInstance' is the globally accessible Isar instance from main.dart
 // A more robust approach might involve initializing Isar within a provider.

@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/common/widgets/padded_appbar.dart';
 import 'package:selene/core/constants/animation_constants.dart';
 import 'package:selene/features/banners/widgets/banner_scaffold.dart';
-import 'package:selene/features/settings/models/preference.dart';
+import 'package:selene/domain/models/preference.dart';
 import 'package:selene/features/settings/screens/appearance/providers/appearance_preferences.dart';
 import 'package:selene/features/settings/screens/appearance/themes/models/theme.dart';
 import 'package:selene/features/settings/screens/appearance/themes/widgets/theme_section.dart';

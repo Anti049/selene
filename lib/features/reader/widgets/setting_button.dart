@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:selene/features/settings/models/preference.dart';
+import 'package:selene/domain/models/preference.dart';
 import 'package:selene/utils/theming.dart';
 
 class SettingOption<T, U> {

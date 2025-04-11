@@ -50,8 +50,6 @@ class SeleneRouter extends RootStackRouter {
       path: '/settings/appearance/theme-selection',
       page: ThemeSelectionRoute.page,
     ),
-    AutoRoute(path: '/settings/library', page: LibrarySettingsRoute.page),
-    AutoRoute(path: '/settings/advanced', page: AdvancedSettingsRoute.page),
     AutoRoute(path: '/settings/about', page: AboutSettingsRoute.page),
   ];
 }

@@ -1,13 +1,13 @@
 I am developing a Flutter app for downloading and reading fanfiction from the web, and want to implement a feature first architecture. The technologies I'm utilizing are:
 
 -   Riverpod (for state management)
--   Hive (for user preferences ONLY)
+-   Hive (for user preferences ONLY, but willing to migrate to another solution if possible)
 -   Dio (for network requests, yet to be implemented)
 -   Flutter (for UI)
 -   Dart (for logic)
 -   Auto Route (for navigation)
 -   Freezed (for data classes)
--   Isar/Drift (for database, undecided which one to use, leaning towards Isar, but needs to be able to utilize links and custom classes/types)
+-   Drift (for database)
 -   RxDart (for data streams)
 -   Epubx (for parsing Epub files)
 
@@ -94,37 +94,46 @@ My current planned data models are as follows:
 
 My current planned screens are:
 
--   Main Screen (showing bottom navigation between the following)
-    -   Library (showing a list of works, where clicking on one will go to the Details page)
-        -   Details (showing work info and a list of chapters, where clicking on one will open the Reader to the indicated chapter)
+-   Main (The main screen, with bottom navigation tabs between the following)
+    -   Library
+        -   Work Details (reached from clicking on a Work in the Library)
+        -   Reader (Ebook reader, reached from either the Work Details page or from clicking the "Continue Reading" button on the Library's Work widget)
+        -   Player (Ebook _player_, treating the work like an audiobook and using TTS to read it aloud (mainly for Android Auto/Apple Carplay) (could possibly use AI e.g. ElevenLabs?))
     -   Updates (showing a list of recent work updates)
     -   History (showing recent read history)
-    -   Browse (showing top tabs between the following)
-        -   Sources (showing a list of sites to browse from installed Extensions)
+    -   Browse (with top tabs between the following)
+        -   Sources (showing a list of sites to browse from installed Extensions such as AO3, FFN, etc.)
         -   Extensions (showing a list of possible site extensions to download and install (a site extension is what allows web scraping of the site))
         -   Migrate (a tab to migrate data (like work source URL) from one site to another (for example, if a work is crossposted on both AO3 and FFN, but the AO3 version is updated more often))
     -   More (showing a list of options)
-        -   Download Queue
-        -   Categories
-        -   Statistics
-        -   Data & Storage
+        -   Download Queue (also accessible via Settings)
+        -   Categories (also accessible via Settings)
+        -   Statistics & Reporting
+        -   Data & Storage (also accessible via Settings)
         -   Settings
             -   Appearance
+                -   Theme Selection
+                    -   Theme Builder
             -   Library
+                -   Categories
             -   Accounts
             -   Reader
             -   Downloads
+                -   Download Queue
             -   Tracking
             -   Browse
+                -   Extension Repos
             -   Notifications
             -   Data & Storage
+                -   Backups
             -   Security & Privacy
             -   Advanced
+                -   Debug Info
+                -   Onboarding Guide
             -   About
-        -   About
+                -   Changelog
+        -   About (also accessible via Settings)
         -   Help
--   Reader
-    -   Audio player (to transcribe the work text via TTS (possibly using AI such as ElevenLabs?))
 
 Other features that are planned, but not restricted to one screen are:
 
@@ -146,12 +155,13 @@ Other features that are planned, but not restricted to one screen are:
 -   Android Auto/Apple CarPlay functionality (for the audio transcription feature mentioned above)
 -   Possible Google Assistant/Alexa skill integration (e.g. "Hey Google, check for fanfiction updates")
 
-The file structure/architecture I want to use is modeled after the following:
+The file structure/architecture I want to use is the following:
 
 -   lib/
-    -   common_widgets/
-    -   constants/
-    -   exceptions/
+    -   core/
+        -   constants/
+        -   exceptions/
+        -   utils/
     -   features/
         -   feature 1/
             -   application/
@@ -162,24 +172,27 @@ The file structure/architecture I want to use is modeled after the following:
                 -   feature_1_tab.dart
         -   feature 2/
         -   feature 3/
+        -   .../
     -   localization/
     -   routing/
-    -   utils/
+    -   main.dart
 
-Given this information and the attached codebase, can you recommend and generate a codebase for:
+Given this information, can you recommend and generate a codebase for:
 
+-   Where should common widgets be placed? (such as Empty, a widget which displays a message, possibly some buttons, and a humorous face, and can be present during loading, error, and empty screens, among others)
 -   How to organize subscreens. Questionable setups include:
-    -   The "Library/Updates/History/Browse/More" screens are all subscreens of one main bottom tab navigation screen. Should these all be grouped under a "main" feature folder, or each have their own feature folders?
-    -   The "Settings" screen is accessed via a button on the "More" tab. Should it be located in the "more" feature folder, or a separate "settings" feature folder?
     -   Themes are accessed/set via "More" -> "Settings" -> "Appearance" -> "Theme Selection", but they apply app-wide. Where should the models/data/repositories for these be located?
 -   Possible packages to add to the stack
 -   A good localization provider that would allow me to change/update/add strings to the localization without having to push an app update to the Play Store (or whatever other distribution method I use)
+-   How can I save preferences using Drift and monitor them for changes via Riverpod (with each screen/feature having its own preferences)
+-   Where should I put theming code? (both the pre-defined themes, the Theme models, and any providers/repositories)
 -   Any possible ALTERNATIVE packages that might be better suited for my project than what I'm using now
 -   Anything else that might be helpful
 
-Give me an example layout (showing which files/directories would use which packages) using the Library feature (as well as directly related features), keeping in mind that:
+Also, in addition to a general codebase-wide architecture, give me an example layout (showing which files/directories would use which packages) using the Library feature (as well as directly related features), keeping in mind that:
 
 -   The Library needs to receive a list of Works from somewhere, or else read them itself
+    -   The Library should ideally update automatically when a new work is detected (either via a new file in one of the monitored folders or via a new Work in the Works database table)
 -   The Library needs some options, such as:
     -   Sort order/qualifier
     -   Filters (only show downloaded, only show works with unread chapters, etc.)

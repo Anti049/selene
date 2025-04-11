@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:selene/features/settings/models/preference.dart';
+import 'package:selene/domain/models/preference.dart';
 import 'package:selene/features/settings/widgets/setting/segmented_setting.dart';
 import 'package:selene/features/settings/widgets/setting/slider_setting.dart';
 import 'package:selene/features/settings/widgets/setting/switch_setting.dart';

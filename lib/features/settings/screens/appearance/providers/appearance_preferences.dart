@@ -1,8 +1,9 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:selene/features/settings/models/preference.dart';
-import 'package:selene/features/settings/providers/preference_provider.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:selene/core/providers/preference_provider.dart';
+import 'package:selene/domain/models/preference.dart';
+import 'package:selene/domain/models/preference_store.dart';
 
 part 'appearance_preferences.g.dart';
 

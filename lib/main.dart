@@ -50,9 +50,6 @@ void main() async {
   ], directory: dir.path);
   // isarInstance = await StorageProvider().initDB(null, inspector: kDebugMode);
 
-  // Initialize Drift
-  // final database = await _initDatabase();
-
   // Load accent color (so it can't be wrong on first run)
   await SystemTheme.accentColor.load();
 

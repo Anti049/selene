@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:selene/common/widgets/empty.dart';
-import 'package:selene/features/settings/screens/advanced/providers/advanced_settings.dart';
 import 'package:selene/features/settings/screens/appearance/providers/appearance_settings.dart';
 import 'package:selene/features/settings/models/searchable_settings.dart';
 import 'package:selene/features/settings/models/setting.dart';
@@ -34,7 +33,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     // NotificationsSettings(),
     // DataStorageSettings(),
     // SecurityPrivacySettings(),
-    AdvancedSettings(),
+    // AdvancedSettings(),
     // AboutSettings(),
   ];
 
@@ -117,7 +116,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         title: 'Advanced',
         subtitle: 'Developer options, experimental features',
         icon: Symbols.developer_mode,
-        onClick: () => router.push(AdvancedSettingsRoute()),
       ),
       // About
       TextSetting(

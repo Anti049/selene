@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:selene/features/settings/models/preference.dart';
+import 'package:selene/domain/models/preference.dart';
 import 'package:selene/features/settings/widgets/setting/text_setting.dart';
 
 class SwitchSettingWidget extends StatelessWidget {

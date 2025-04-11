@@ -126,16 +126,16 @@ flutter_native_splash:
 package_rename_config:
     android:
         app_name: Selene
-        package_name: dev.nploetz.selene
+        package_name: old.nploetz.selene
         override_old_package: com.example.selene
         lang: kotlin
     ios:
         app_name: Selene
         bundle_name: selene
-        package_name: dev.nploetz.selene
+        package_name: old.nploetz.selene
     linux:
         app_name: Selene
-        package_name: dev.nploetz.selene
+        package_name: old.nploetz.selene
         exe_name: selene-linux-x64
     windows:
         app_name: Selene
@@ -144,5 +144,5 @@ package_rename_config:
         exe_name: selene-win32
     macos:
         app_name: Selene
-        package_name: dev.nploetz.selene
+        package_name: old.nploetz.selene
         copyright_notice: Copyright ©️ 2025 nploetz. All rights reserved.
